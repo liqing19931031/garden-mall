@@ -61,12 +61,10 @@
     </y-shelf>
     <div style="float:right">
       <el-pagination
-        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        :page-sizes="[5, 10, 20, 50]"
         :page-size="pageSize"
-        layout="total, sizes, prev, pager, next"
+        layout="total, pager"
         :total="total">
       </el-pagination>
     </div>
@@ -87,11 +85,6 @@
       }
     },
     methods: {
-      message (m) {
-        this.$message.error({
-          message: m
-        })
-      },
       handleSizeChange (val) {
         this.pageSize = val
         this._orderList()
@@ -129,14 +122,15 @@
           return '支付失败'
         }
       },
-      _orderList () {
+      _getOrderList (status = 1) {
         let params = {
           params: {
-            size: this.pageSize,
-            page: this.currentPage
+            page: this.currentPage,
+            status: status
           }
         }
         getOrderList(params).then(res => {
+          console.log(res)
           this.orderList = res.data
           // this.total = res.result.total
           this.loading = false
@@ -158,7 +152,7 @@
       }
     },
     created () {
-      this._orderList()
+      this._getOrderList()
     },
     components: {
       YShelf

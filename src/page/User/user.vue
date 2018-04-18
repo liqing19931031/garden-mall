@@ -37,12 +37,12 @@
       return {
         title: '我的订单',
         nav: [
-          {name: '我的订单', path: 'orderList'},
-          {name: '账户资料', path: 'information'},
-          {name: '收货地址', path: 'addressList'},
-          {name: '我的优惠', path: 'coupon'},
-          {name: '售后服务', path: 'support'},
-          {name: '以旧换新', path: 'aihuishou'}
+          {name: '订单管理', path: 'orderList'},
+          {name: '我的资产', path: 'information'},
+          {name: '地址管理', path: 'addressList'},
+          {name: '我的团队', path: 'coupon'},
+          {name: '消息管理', path: 'support'},
+          {name: '个人设置', path: 'aihuishou'}
         ],
         editAvatar: true
       }

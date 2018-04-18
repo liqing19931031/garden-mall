@@ -20,7 +20,7 @@
             </div>
             <div class="operation">
               <el-button type="primary" icon="edit" size="small"  @click="update(item)"></el-button>
-              <el-button type="danger" icon="delete" size="small" :data-id="item.address_id" @click="del(item.address_id, i)"></el-button>
+              <el-button type="danger" icon="delete" size="small" :data-id="item.address_id" @click="del(item.address_id)"></el-button>
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@
   </div>
 </template>
 <script>
-  import { addressList, addressAdd, addressDel, getArea } from '/api/address'
+  import { addressList, addressAdd, addressDel, getArea, setDefaultAdd } from '/api/address'
   import YButton from '/components/YButton'
   import YPopup from '/components/popup'
   import YShelf from '/components/shelf'
@@ -129,6 +129,7 @@
       _addressList () {
         addressList().then(res => {
           let data = res.data
+          console.log(data)
           if (data.length) {
             this.addList = res.data
             this.addressId = res.data[0].addressId || '0'
@@ -144,8 +145,17 @@
       },
       changeDef (item) {
         if (!item.isDefault) {
-          item.isDefault = true
-          this._addressUpdate(item)
+          setDefaultAdd({address_id: item.address_id}).then(res => {
+            if (res.code === 1) {
+              item.isDefault = true
+              this.$message({
+                type: 'success',
+                message: '修改默认地址成功！'
+              })
+            } else {
+              this.$message.error(res.msg)
+            }
+          })
         }
         return false
       },
@@ -158,6 +168,7 @@
               type: 'success',
               message: '地址添加成功！'
             })
+            this._addressList()
           } else {
             this.$message.error(res.message)
             this.popupOpen = false
@@ -165,10 +176,14 @@
         })
       },
       // 删除
-      del (addressId, i) {
-        addressDel({addressId: addressId}).then(res => {
-          if (res.success === true) {
-            this.addList.splice(i, 1)
+      del (id) {
+        addressDel({address_id: id}).then(res => {
+          if (res.code === 1) {
+            this.$message({
+              type: 'success',
+              message: '地址删除成功！'
+            })
+            this._addressList()
           } else {
             this.message('删除失败')
           }

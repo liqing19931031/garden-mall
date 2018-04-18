@@ -16,7 +16,7 @@ export const addressAdd = (params) => {
 }
 // 删除收货地址
 export const addressDel = (params) => {
-  return http.fetchPost('/member/delAddress', params)
+  return http.fetchPost(`?${qs.stringify({...commonParams, a: 'delAddress'})}`, params)
 }
 // 获取用户地址
 export const addressList = () => {
@@ -25,4 +25,8 @@ export const addressList = () => {
 // 省市区
 export const getArea = (params) => {
   return http.fetchGet('', {...areaData, a: 'place', ...params})
+}
+// 设置默认地址
+export const setDefaultAdd = (params) => {
+  return http.fetchGet('', {...commonParams, a: 'setAddressDefault', ...params})
 }

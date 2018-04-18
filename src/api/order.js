@@ -6,9 +6,6 @@ let commonParams = {
   c: 'user'
 }
 // 获取订单列表
-export const getOrderList = () => {
-  return http.fetchGet('', {
-    ...commonParams,
-    a: 'orders'
-  })
+export const getOrderList = (params) => {
+  return http.fetchGet('', {...commonParams, a: 'orders', ...params})
 }
