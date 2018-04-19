@@ -1,6 +1,6 @@
 <template>
   <div class="footer">
-    <div class="container">
+    <!-- <div class="container">
       <div class="siteinfo">
         <ul class="c0">
           <h3 class="c1">订单服务</h3>
@@ -74,7 +74,7 @@
           <span class="content-c3">蜀ICP证16030308号</span>
         </a>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -138,7 +138,7 @@
   .container {
     width: 1220px;
   }
-  
+
   .siteinfo {
     height: 100px;
     padding: 50px 0 130px;
@@ -247,7 +247,7 @@
     padding: 1px 10px 0;
     border-left: 1px solid #ccc;
   }
-  
+
   .content-c2 {
     float: left;
     height: 15px;

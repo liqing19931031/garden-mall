@@ -1,11 +1,11 @@
 <template>
   <div>
-    <y-shelf title="售后服务">
+    <y-shelf title="消息管理">
       <div slot="content">
         <div style="padding: 100px 0;text-align: center">
           <img src="/static/images/support.png">
           <br>
-          <span class="support">如有疑问请联系邮箱1012139570@qq.com</span>
+          <span class="support">这个还没想好怎么做</span>
         </div>
       </div>
     </y-shelf>

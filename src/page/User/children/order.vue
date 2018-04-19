@@ -8,32 +8,29 @@
               <div class="first">
                 <div>
                   <span class="date" v-text="item.createDate"></span>
-                  <span class="order-id"> 订单号： <a @click="orderDetail(item.orderId)">{{item.orderId}}</a> </span>
+                  <span class="order-id"> 订单号： <a @click="orderDetail(item.orderId)">{{item.order_sn}}</a> </span>
                 </div>
                 <div class="f-bc">
-                  <span class="price">单价</span>
                   <span class="num">数量</span>
                   <span class="operation">商品操作</span>
                 </div>
               </div>
               <div class="last">
                 <span class="sub-total">实付金额</span>
-                <span class="order-detail"> <a @click="orderDetail(item.orderId)">查看详情 ><em class="icon-font"></em></a> </span>
+                <span class="order-detail"> <a @click="orderDetail(item.order_id)">查看详情 ><em class="icon-font"></em></a> </span>
               </div>
             </div>
             <div class="pr">
-              <div class="cart" v-for="(good,j) in item.goodsList" :key="j">
+              <div class="cart" v-for="(good,j) in item.goods" :key="j">
                 <div class="cart-l" :class="{bt:j>0}">
                   <div class="car-l-l">
-                    <div class="img-box"><a @click="goodsDetails(good.productId)"><img :src="good.productImg" alt=""></a></div>
-                    <div class="ellipsis"><a style="color: #626262;" @click="goodsDetails(good.productId)">{{good.productName}}</a></div>
+                    <div class="img-box"><a @click="goodsDetails(good.goods_id)"><img :src="good.productImg" alt=""></a></div>
+                    <div class="ellipsis"><a style="color: #626262;" @click="goodsDetails(good.productId)">{{good.goods_name}}</a></div>
                   </div>
                   <div class="cart-l-r">
-                    <div>¥ {{good.salePrice}}</div>
-                    <div class="num">{{good.productNum}}</div>
+                    <div style="line-height: 28px" class="num">{{good.goods_number}}</div>
                     <div class="type">
-                      <el-button style="margin-left:20px" @click="_delOrder(item.orderId,i)" type="danger" size="small" v-if="j<1" class="del-order">删除此订单</el-button>
-                      <!-- <a @click="_delOrder(item.orderId,i)" href="javascript:;" v-if="j<1" class="del-order">删除此订单</a> -->
+                      <el-button @click="_delOrder(item.orderId,i)" type="danger" size="small" class="del-order">删除此订单</el-button>
                     </div>
                   </div>
                 </div>
@@ -43,11 +40,11 @@
                 </div>
               </div>
               <div class="prod-operation pa" style="right: 0;top: 0;">
-                <div class="total">¥ {{item.orderTotal}}</div>
-                <div v-if="item.orderStatus === '0'">
-                  <el-button @click="orderPayment(item.orderId)" type="primary" size="small">现在付款</el-button>
+                <div class="total">¥ {{item.order_amount}}</div>
+                <div v-if="item.order_status === '0'">
+                  <el-button @click="orderPayment(item.order_id)" type="primary" size="small">现在付款</el-button>
                 </div>
-                <div class="status" v-if="item.orderStatus !== '0'"> {{getOrderStatus(item.orderStatus)}}  </div>
+                <div class="status" v-if="item.order_status !== '0'"> {{getOrderStatus(item.order_status)}}  </div>
               </div>
             </div>
           </div>
@@ -109,17 +106,11 @@
       },
       getOrderStatus (status) {
         if (status === '1') {
-          return '支付审核中'
+          return '待付款'
         } else if (status === '2') {
-          return '待发货'
-        } else if (status === '3') {
           return '待收货'
-        } else if (status === '4') {
+        } else if (status === '3') {
           return '交易成功'
-        } else if (status === '5') {
-          return '交易关闭'
-        } else if (status === '6') {
-          return '支付失败'
         }
       },
       _getOrderList (status = 1) {
@@ -130,9 +121,8 @@
           }
         }
         getOrderList(params).then(res => {
-          console.log(res)
-          this.orderList = res.data
-          // this.total = res.result.total
+          this.orderList = res.data.list
+          this.total = +res.data.total
           this.loading = false
         })
       },
@@ -206,23 +196,11 @@
     padding-left: 0px;
   }
 
-  .order-id {
-    margin-left: 25px;
-  }
-
   .cart {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 24px;
-    &:hover {
-      .del-order {
-        display: block;
-      }
-    }
-    .del-order {
-      display: none;
-    }
     .cart-l {
       display: flex;
       align-items: center;
