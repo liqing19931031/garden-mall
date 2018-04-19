@@ -24,8 +24,8 @@
               <div class="cart" v-for="(good,j) in item.goods" :key="j">
                 <div class="cart-l" :class="{bt:j>0}">
                   <div class="car-l-l">
-                    <div class="img-box"><a @click="goodsDetails(good.goods_id)"><img :src="good.productImg" alt=""></a></div>
-                    <div class="ellipsis"><a style="color: #626262;" @click="goodsDetails(good.productId)">{{good.goods_name}}</a></div>
+                    <div class="img-box"><a @click="goodsDetails(good.goods_id)"><img :src="good.goods_img" alt=""></a></div>
+                    <div class="ellipsis"><a style="color: #626262;" @click="goodsDetails(good.goods_id)">{{good.goods_name}}</a></div>
                   </div>
                   <div class="cart-l-r">
                     <div style="line-height: 28px" class="num">{{good.goods_number}}</div>
