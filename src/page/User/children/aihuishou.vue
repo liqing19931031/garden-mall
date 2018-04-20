@@ -41,12 +41,62 @@
                   {{form.user_name}}
                 </div>
               </div>
-              <button type="primary" name="button">保存</button>
+              <button type="primary" name="button" style="margin-top: 20px">保存</button>
             </el-tab-pane>
             <el-tab-pane label="财产安全" name="second">
-
+              <div class="form-group">
+                <div class="input-title">
+                  银行卡账号
+                </div>
+                <input type="text" placeholder="银行卡账号" v-model="property.bank_id">
+              </div>
+              <div class="form-group">
+                <div class="input-title">
+                  开户行
+                </div>
+                <input type="text" placeholder="开户行" v-model="property.bank">
+              </div>
+              <div class="form-group">
+                <div class="input-title">
+                  开户人姓名
+                </div>
+                <input type="text" placeholder="开户人姓名" v-model="property.bank_name">
+              </div>
+              <div class="form-group">
+                <div class="input-title">
+                  联系方式
+                </div>
+                <input type="text" placeholder="开户人联系方式" v-model="property.tel">
+              </div>
+              <div class="form-group">
+                <div class="input-title">
+                  电子钱包
+                </div>
+                <input type="text" placeholder="imtoken钱包地址" v-model="property.wallet">
+              </div>
+              <button type="primary" name="button" style="margin-top: 20px">保存</button>
             </el-tab-pane>
-            <el-tab-pane label="修改密码" name="third">角色管理</el-tab-pane>
+            <el-tab-pane label="修改密码" name="third">
+              <div class="form-group">
+                <div class="input-title">
+                  您的密码
+                </div>
+                <input type="text" placeholder="旧密码" v-model="property.old_password">
+              </div>
+              <div class="form-group">
+                <div class="input-title">
+                  新密码
+                </div>
+                <input type="text" placeholder="新密码" v-model="property.new_password">
+              </div>
+              <div class="form-group">
+                <div class="input-title">
+                  确认密码
+                </div>
+                <input type="text" placeholder="确认密码" v-model="property.new2_password">
+              </div>
+              <button type="primary" name="button" style="margin-top: 20px" @click='safeSave()'>保存</button>
+            </el-tab-pane>
           </el-tabs>
         </div>
       </div>
@@ -63,11 +113,34 @@
           user_name: '游客',
           true_name: '',
           id_card: ''
+        },
+        property: {
+          wallet: '',
+          tel: '',
+          bank_name: '',
+          bank: '',
+          bank_id: ''
+        },
+        safe: {
+          old_password: '',
+          new_password: '',
+          new2_password: ''
         }
       }
     },
     components: {
       YShelf
+    },
+    methods: {
+      safeSave () {
+        if ((this.safe.new_password === this.safe.new2_password) && (this.safe.new_password !== '')) {
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '两次输入密码必须一致！'
+          })
+        }
+      }
     }
   }
 </script>
@@ -105,6 +178,17 @@
             margin-top: 10px;
           }
         }
+      }
+    }
+    button {
+      cursor: pointer;
+      &[type=primary] {
+        background-color: #98AFEE;
+      }
+    }
+    .el-tabs__item{
+      &.is-active{
+        color: #98AFEE;
       }
     }
   }

@@ -164,7 +164,6 @@
     display: flex;
     span {
       display: inline-block;
-      height: 100%;
     }
     .first {
       display: flex;
