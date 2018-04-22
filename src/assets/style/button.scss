@@ -1,8 +1,19 @@
 button[type=primary]{
   color: white;
+  cursor: pointer;
   padding: 3px 25px;
   border-radius: 4px;
   background-color: $main-col;
+  a{
+    color: inherit;
+  }
+}
+button[type=default]{
+  cursor: pointer;
+  color: #4D4D4D;
+  padding: 3px 25px;
+  border-radius: 4px;
+  background-color: #E6E6E6;
   a{
     color: inherit;
   }

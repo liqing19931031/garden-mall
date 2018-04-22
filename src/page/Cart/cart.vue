@@ -23,7 +23,7 @@
                       <!--勾选-->
                       <div class="items-choose">
                       <span :class="item.checked === 1 ? 'checkbox-on blue-checkbox-new' : 'blue-checkbox-new'"
-                            @click="_cartEdit(i, item)"></span>
+                            @click="_cartEdit(item, i)"></span>
                       </div>
                       <!--图片-->
                       <div class="items-thumb fl">
@@ -58,7 +58,7 @@
                                    align-items: center;
                                    justify-content: center;"
                                  :limit="item.limit_num"
-                                 @edit-num="EditNum"
+                                 @edit-num="(value) => EditNum(value, item, i)"
                         >
                         </buy-num>
                         <!--价格-->
@@ -138,7 +138,6 @@
     computed: {
       // 是否全选
       checkAllFlag () {
-        console.log(1)
         return this.checkedCount === this.cartList.length
       },
       // 勾选的数量
@@ -196,20 +195,25 @@
       // 全选
       editCheckAll () {
         if (this.checkAllFlag) {
-          this.cartList.forEach(item => {
-            item.checked = 0
+          this.cartList.forEach((item, index) => {
+            this.$set(this.cartList, index, {...item, checked: 0})
           })
         } else {
-          this.cartList.forEach(item => {
-            item.checked = 1
+          this.cartList.forEach((item, index) => {
+            this.$set(this.cartList, index, {...item, checked: 1})
           })
         }
       },
       // 修改购物车
-      _cartEdit (index, item) {
-        this.cartList[index].checked = +item.checked ? 0 : 1
+      _cartEdit (item, i) {
+        if (+item.checked) {
+          this.$set(this.cartList, i, {...item, checked: 0})
+        } else {
+          this.$set(this.cartList, i, {...item, checked: 1})
+        }
       },
-      EditNum () { // 数量
+      EditNum (value, item, i) { // 数量
+        this.$set(this.cartList, i, {...item, goods_number: value})
       },
       // 删除整条购物车
       cartdel (id) {
@@ -228,7 +232,28 @@
       checkout () {
         this.checkoutNow = '结算中...'
         this.submit = false
-        this.$router.push({path: 'checkout'})
+        let number = []
+        let ids = []
+        let idType = []
+        this.cartList.forEach((item, index) => {
+          if (+item.checked) {
+            number.push(item.goods_number)
+            ids.push(item.goods_id)
+            idType.push(item.cat_id)
+          }
+        })
+        let newType = Array.from(new Set(idType))
+        console.log(newType)
+        if (newType.length < 2) {
+          this.$router.push({path: 'checkout', query: {productId: ids.join(','), num: number.join(',')}})
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '产权证不能和普通商品一起购买！'
+          })
+          this.checkoutNow = '现在结算'
+          this.submit = true
+        }
       }
     },
     mounted () {

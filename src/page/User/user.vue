@@ -41,7 +41,7 @@
           {name: '我的资产', path: 'information'},
           {name: '地址管理', path: 'addressList'},
           {name: '我的团队', path: 'coupon'},
-          {name: '消息管理', path: 'support'},
+          // {name: '消息管理', path: 'support'},
           {name: '个人设置', path: 'aihuishou'}
         ],
         editAvatar: true

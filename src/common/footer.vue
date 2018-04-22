@@ -28,13 +28,9 @@
               <div style="float: left">
                 客服微信：
               </div>
-              <img src="/static/footer/4.png" alt="">
+              <img src="/static/images/wechat.jpg" width='120' alt="">
             </div>
           </div>
-      </div>
-      <div class="copyright">
-        <h4 class="content-c2">网站备案/许可证号：沪ICP备*********/沪 ***********</h4>
-        <h4 class="content-c2">© 2018-2020 http://*********.com******电子商务有限公司版权所有</h4>
       </div>
     </div>
   </div>

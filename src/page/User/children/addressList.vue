@@ -129,7 +129,6 @@
       _addressList () {
         addressList().then(res => {
           let data = res.data
-          console.log(data)
           if (data.length) {
             this.addList = res.data
             this.addressId = res.data[0].addressId || '0'
@@ -152,6 +151,7 @@
                 type: 'success',
                 message: '修改默认地址成功！'
               })
+              this._addressList()
             } else {
               this.$message.error(res.msg)
             }
