@@ -41,7 +41,7 @@
                         <router-link to="/user/orderList">我的订单</router-link>
                       </li>
                       <li>
-                        <router-link to="/user/information">账号资料</router-link>
+                        <router-link to="/user/information">我的资产</router-link>
                       </li>
                       <li>
                         <router-link to="/user/addressList">收货地址</router-link>
@@ -76,7 +76,7 @@
   import YButton from '/components/YButton'
   import { mapMutations, mapState } from 'vuex'
   import { loginOut } from '/api/index'
-  import { removeStore } from '/utils/storage'
+  import { setStore } from '/utils/storage'
   // import store from '../store/'
   import 'element-ui/lib/theme-default/index.css'
   export default{
@@ -210,14 +210,9 @@
       },
       // 退出登陆
       _loginOut () {
-        let params = {
-          params: {
-            token: this.token
-          }
-        }
-        loginOut(params).then(res => {
-          removeStore('buyCart')
-          window.location.href = '/'
+        loginOut().then(res => {
+          setStore('login', false)
+          this.$router.push('/login')
         })
       },
       // 通过路由改变导航文字样式

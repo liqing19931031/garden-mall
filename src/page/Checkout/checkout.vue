@@ -211,7 +211,7 @@
           if (res.code === 1) {
             this.payment(res.data.order_id)
           } else {
-            this.message.error(res.message)
+            this.$message.error(res.message)
             this.submitOrder = '提交订单'
             this.submit = false
           }
