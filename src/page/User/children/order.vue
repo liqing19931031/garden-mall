@@ -42,11 +42,11 @@
               <div class="prod-operation pa" style="right: 0;top: 0;">
                 <div class="total">¥ {{item.order_amount}}</div>
                 <div class="status" v-if="item.order_status !== '0'">
-                  <el-button v-if='item.order_status === "3"' @click="_delOrder(item.orderId, i)" type="danger" size="small" class="del-order">删除此订单</el-button>
-                  <el-button v-if='item.order_status === "4"' @click="_delOrder(item.orderId, i)" type="danger" size="small" class="del-order">删除此订单</el-button>
-                  <el-button v-if='item.order_status === "1"' @click="_delOrder(item.orderId, i)" type="danger" size="small" class="del-order">取消订单</el-button>
-                  <el-button v-if='item.order_status === "1"' @click="_delOrder(item.orderId, i)" type="primary" size="small" class="del-order">去支付</el-button>
-                  <el-button v-if='item.order_status === "2"' @click="_delOrder(item.orderId, i)" type="warning" size="small" class="del-order">确认收货</el-button>
+                  <el-button v-if='item.order_status === "3"' @click="_delOrder(item.order_id)" type="danger" size="small" class="del-order">删除此订单</el-button>
+                  <el-button v-if='item.order_status === "4"' @click="_delOrder(item.order_id)" type="danger" size="small" class="del-order">删除此订单</el-button>
+                  <el-button v-if='item.order_status === "1"' @click="_cancelOrder(item.order_id)" type="danger" size="small" class="del-order">取消订单</el-button>
+                  <el-button v-if='item.order_status === "1"' @click="_goPay(item.order_id)" type="primary" size="small" class="del-order">去支付</el-button>
+                  <el-button v-if='item.order_status === "2"' @click="_recOrder(item.order_id)" type="warning" size="small" class="del-order">确认收货</el-button>
                 </div>
               </div>
             </div>
@@ -71,7 +71,7 @@
   </div>
 </template>
 <script>
-  import { getOrderList } from '/api/order'
+  import { getOrderList, cancelOrder, delOrder } from '/api/order'
   import YShelf from '/components/shelf'
   export default {
     data () {
@@ -92,9 +92,6 @@
       handleCurrentChange (val) {
         this.currentPage = val
         this._orderList()
-      },
-      orderPayment (orderId) {
-        window.open(window.location.origin + '#/order/payment?orderId=' + orderId)
       },
       goodsDetails (id) {
         window.open(window.location.origin + '#/goodsDetails?productId=' + id)
@@ -131,19 +128,42 @@
           this.loading = false
         })
       },
-      _delOrder (orderId, i) {
-        // let params = {
-        //   params: {
-        //     orderId: orderId
-        //   }
-        // }
-        // delOrder(params).then(res => {
-        //   if (res.success === true) {
-        //     this.orderList.splice(i, 1)
-        //   } else {
-        //     this.message('删除失败')
-        //   }
-        // })
+      _goPay (orderId) {
+        this.$router.push({
+          path: '/order/payment',
+          query: {
+            'orderId': orderId
+          }
+        })
+      },
+      _cancelOrder (orderId) {
+        cancelOrder({order_id: orderId}).then(res => {
+          if (res.code === 1) {
+            this.$message({
+              type: 'success',
+              message: '取消订单成功！'
+            })
+            this._getOrderList()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+      },
+      _delOrder (orderId) {
+        delOrder({order_id: orderId}).then(res => {
+          if (res.code === 1) {
+            this.$message({
+              type: 'success',
+              message: '订单删除成功！'
+            })
+            this._getOrderList()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+      },
+      _recOrder (orderId) {
+
       }
     },
     created () {

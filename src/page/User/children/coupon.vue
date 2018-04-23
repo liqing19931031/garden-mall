@@ -77,7 +77,9 @@
               label="查看下属成员"
               width="130">
               <template scope='scope'>
-                <img width='40' style="cursor: pointer" src="/static/images/da.png" alt="">
+                <router-link :to="{path: '/user/childTree', query: {userId: scope.row.user_id}}">
+                  <img width='40' style="cursor: pointer" src="/static/images/da.png" alt="">
+                </router-link>
               </template>
             </el-table-column>
           </el-table>

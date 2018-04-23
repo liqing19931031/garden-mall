@@ -25,3 +25,11 @@ export const getOrder = (params) => {
 export const payOrder = (params) => {
   return http.fetchGet('', {...commonParams, a: 'payOrder', ...params})
 }
+
+export const cancelOrder = (params) => {
+  return http.fetchGet('', {...commonParams, a: 'cancelOrder', ...params})
+}
+
+export const delOrder = (params) => {
+  return http.fetchGet('', {...commonParams, a: 'delOrder', ...params})
+}
