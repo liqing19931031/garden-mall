@@ -12,12 +12,12 @@
                 </div>
                 <div class="f-bc">
                   <span class="num">数量</span>
-                  <span class="operation">商品操作</span>
+                  <span class="operation">订单状态</span>
                 </div>
               </div>
               <div class="last">
                 <span class="sub-total">实付金额</span>
-                <span class="order-detail"> <a @click="orderDetail(item.order_id)">查看详情 ><em class="icon-font"></em></a> </span>
+                <span class="order-detail">商品操作</span>
               </div>
             </div>
             <div class="pr">
@@ -30,7 +30,7 @@
                   <div class="cart-l-r">
                     <div style="line-height: 28px" class="num">{{good.goods_number}}</div>
                     <div class="type">
-                      <el-button @click="_delOrder(item.orderId,i)" type="danger" size="small" class="del-order">删除此订单</el-button>
+                       {{getOrderStatus(item.order_status)}}
                     </div>
                   </div>
                 </div>
@@ -41,10 +41,13 @@
               </div>
               <div class="prod-operation pa" style="right: 0;top: 0;">
                 <div class="total">¥ {{item.order_amount}}</div>
-                <div v-if="item.order_status === '0'">
-                  <el-button @click="orderPayment(item.order_id)" type="primary" size="small">现在付款</el-button>
+                <div class="status" v-if="item.order_status !== '0'">
+                  <el-button v-if='item.order_status === "3"' @click="_delOrder(item.orderId, i)" type="danger" size="small" class="del-order">删除此订单</el-button>
+                  <el-button v-if='item.order_status === "4"' @click="_delOrder(item.orderId, i)" type="danger" size="small" class="del-order">删除此订单</el-button>
+                  <el-button v-if='item.order_status === "1"' @click="_delOrder(item.orderId, i)" type="danger" size="small" class="del-order">取消订单</el-button>
+                  <el-button v-if='item.order_status === "1"' @click="_delOrder(item.orderId, i)" type="primary" size="small" class="del-order">去支付</el-button>
+                  <el-button v-if='item.order_status === "2"' @click="_delOrder(item.orderId, i)" type="warning" size="small" class="del-order">确认收货</el-button>
                 </div>
-                <div class="status" v-if="item.order_status !== '0'"> {{getOrderStatus(item.order_status)}}  </div>
               </div>
             </div>
           </div>
@@ -111,6 +114,8 @@
           return '待收货'
         } else if (status === '3') {
           return '交易成功'
+        } else if (status === '4') {
+          return '已取消'
         }
       },
       _getOrderList (status = 1) {
@@ -151,7 +156,14 @@
 </script>
 <style lang="scss" scoped>
   @import "../../../assets/style/mixin";
-
+  button{
+    & + button{
+      margin-top: 15px;
+    }
+  }
+  .el-button + .el-button{
+    margin-left: 0;
+  }
   .gray-sub-title {
     height: 38px;
     padding: 0 24px;

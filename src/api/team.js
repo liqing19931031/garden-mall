@@ -14,3 +14,7 @@ export const getTeamList = (params) => {
 export const getTeamDetail = (params) => {
   return http.fetchGet('', {...commonParams, a: 'tdInfo', ...params})
 }
+
+export const getCqz = (params) => {
+  return http.fetchGet('', {...commonParams, a: 'myCqz', ...params})
+}

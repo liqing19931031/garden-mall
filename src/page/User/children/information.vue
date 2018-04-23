@@ -11,9 +11,9 @@
                     余额
                   </div>
                   <div class="message-card__content">
-                    <span>20000可用</span>
+                    <span><em style="font-size: 24px">￥{{coin.balance}}</em>可用</span>
                     <div class="">
-                      <button type="primary" name="button">充值</button>
+                      <button type="primary" name="button" @click='chongzhi'>充值</button>
                       <router-link to="/home">
                         <button type="default" name="button">去购物</button>
                       </router-link>
@@ -25,7 +25,7 @@
                     园林币
                   </div>
                   <div class="message-card__content">
-                    <span>2000</span>
+                    <span><em style="font-size: 24px">{{coin.garden_coin}}</em>可用</span>
                     <div class="">
                       <router-link to="/home">
                         <button type="default" name="button">去购物</button>
@@ -38,9 +38,9 @@
                     奖励金
                   </div>
                   <div class="message-card__content">
-                    <span>2000</span>
+                    <span><em style="font-size: 24px">￥{{coin.reward}}</em>可用</span>
                     <div class="">
-                      <button type="primary" name="button">充值</button>
+                      <button type="primary" name="button" @click='chongzhi'>充值</button>
                       <router-link to="/home">
                         <button type="default" name="button">去购物</button>
                       </router-link>
@@ -52,7 +52,7 @@
                     抵押金
                   </div>
                   <div class="message-card__content">
-                    <span>2000</span>
+                    <span><em style="font-size: 24px">￥{{coin.integral}}</em>可用</span>
                     <div class="">
                       <router-link to="/home">
                         <button type="default" name="button">去购物</button>
@@ -61,136 +61,200 @@
                   </div>
                 </div>
               </div>
-              <div v-if="teamList.length">
-                <el-table
-                  :data="teamList"
-                  style="width: 100%">
-                  <el-table-column
-                    prop="user_name"
-                    label="日期">
-                  </el-table-column>
-                  <el-table-column
-                    prop="true_name"
-                    label="名称">
-                  </el-table-column>
-                  <el-table-column
-                    prop="level"
-                    label="金额">
-                  </el-table-column>
-                  <el-table-column
-                    prop="pre_code"
-                    label="状态">
-                  </el-table-column>
-                  <el-table-column
-                    prop="yes_cost"
-                    label="删除">
-                  </el-table-column>
-                </el-table>
+              <div style='padding: 15px;' class="check__box">
+                <span :class="{'checked-on': checkedOn}" @click='checkedOn = true'>交易明细</span>
+                <span :class="{'checked-on': !checkedOn}" @click='checkedOn = false'>分红明细</span>
+              </div>
+              <div v-if='checkedOn'>
+                <div v-if="teamList.length">
+                  <el-table
+                    :data="teamList"
+                    style="width: 100%">
+                    <el-table-column
+                      prop="add_time"
+                      label="日期">
+                    </el-table-column>
+                    <el-table-column
+                      prop="goods_name"
+                      label="名称">
+                    </el-table-column>
+                    <el-table-column
+                      prop="order_amount"
+                      label="金额">
+                      <template scope='scope'>
+                        ￥{{scope.row.order_amount}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="order_status"
+                      label="状态">
+                      <template scope='scope'>
+                        {{getState(scope.row.order_status)}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="yes_cost"
+                      label="操作">
+                      <template scope='scope'>
+                        <button type="default" name="button">删除</button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
+                <div class='message-content' style="text-align: center" v-else>
+                  <img src="/static/images/no-search.png">
+                  <br>
+                  <span class="no-discount">暂无交易明细~</span>
+                </div>
+              </div>
+              <div v-else>
+                <div v-if="rewardList.length">
+                  <el-table
+                    :data="rewardList"
+                    style="width: 100%">
+                    <el-table-column
+                      prop="add_time"
+                      label="日期">
+                    </el-table-column>
+                    <el-table-column
+                      prop="goods_name"
+                      label="名称">
+                    </el-table-column>
+                    <el-table-column
+                      prop="order_amount"
+                      label="金额">
+                      <template scope='scope'>
+                        ￥{{scope.row.order_amount}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="order_status"
+                      label="状态">
+                      <template scope='scope'>
+                        {{getState(scope.row.order_status)}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="yes_cost"
+                      label="操作">
+                      <template scope='scope'>
+                        <button type="default" name="button">删除</button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
+                <div class='message-content' style="text-align: center" v-else>
+                  <img src="/static/images/no-search.png">
+                  <br>
+                  <span class="no-discount">暂无分红明细~</span>
+                </div>
               </div>
             </el-tab-pane>
             <el-tab-pane label="产权证" name="second">
-              <div class="cqz">
-                <div class="one-line">
-                  <div class="flex1 flex-board">
-                    土地拥有权信息展示
+              <div style="padding: 15px">
+                <div class="cqz">
+                  <div class="one-line">
+                    <div class="flex1 flex-board">
+                      土地拥有权信息展示
+                    </div>
                   </div>
-                </div>
-                <div class="one-line">
-                  <div class="flex1 flex-board">
-                    森林地所有权力人
+                  <div class="one-line">
+                    <div class="flex1 flex-board">
+                      森林地所有权力人
+                    </div>
+                    <div class="flex1 flex-board">
+                      观音岩村
+                    </div>
+                    <div class="flex1 flex-board">
+                      森林地使用权力人
+                    </div>
+                    <div class="flex1 flex-board">
+                      {{user_name}}
+                    </div>
                   </div>
-                  <div class="flex1 flex-board">
-                    观音岩村
+                  <div class="one-line">
+                    <div class="flex1 flex-board">
+                      森林或林木所有权权利人
+                    </div>
+                    <div class="flex1 flex-board">
+                      {{user_name}}
+                    </div>
+                    <div class="flex1 flex-board">
+                      森林或林木使用权权利人
+                    </div>
+                    <div class="flex1 flex-board">
+                      {{user_name}}
+                    </div>
                   </div>
-                  <div class="flex1 flex-board">
-                    森林地使用权力人
+                  <div class="one-line">
+                    <div class="flex1 flex-board">
+                      坐落
+                    </div>
+                    <div class="flex3 flex-board">
+                      湖北省襄樊市南漳县肖堰镇观音岩1组
+                    </div>
                   </div>
-                  <div class="flex1 flex-board">
-                    袁二狗
+                  <div class="one-line">
+                    <div class="flex3 flex-board">
+                      小地名
+                    </div>
+                    <div class="flex3 flex-board">
+                      漳河
+                    </div>
+                    <div class="flex1 flex-board">
+                      林班
+                    </div>
+                    <div class="flex2 flex-board">
+                      1
+                    </div>
+                    <div class="flex1 flex-board">
+                      小时
+                    </div>
+                    <div class="flex2 flex-board">
+                      0-10
+                    </div>
                   </div>
-                </div>
-                <div class="one-line">
-                  <div class="flex1 flex-board">
-                    森林或林木所有权权利人
+                  <div class="one-line">
+                    <div class="flex1 flex-board">
+                      面积
+                    </div>
+                    <div class="flex1 flex-board">
+                      {{cqz_mj}}
+                    </div>
+                    <div class="flex1 flex-board">
+                      主要树种
+                    </div>
+                    <div class="flex1 flex-board">
+                      栋类
+                    </div>
                   </div>
-                  <div class="flex1 flex-board">
-                    观音岩村
+                  <div class="one-line">
+                    <div class="flex1 flex-board">
+                      株数
+                    </div>
+                    <div class="flex1 flex-board">
+                      /
+                    </div>
+                    <div class="flex1 flex-board">
+                      林种
+                    </div>
+                    <div class="flex1 flex-board">
+                      防护林（公）
+                    </div>
                   </div>
-                  <div class="flex1 flex-board">
-                    森林或林木使用权权利人
-                  </div>
-                  <div class="flex1 flex-board">
-                    袁二狗
-                  </div>
-                </div>
-                <div class="one-line">
-                  <div class="flex1 flex-board">
-                    坐落
-                  </div>
-                  <div class="flex3 flex-board">
-                    湖北省襄樊市南漳县肖堰镇观音岩1组
-                  </div>
-                </div>
-                <div class="one-line">
-                  <div class="flex3 flex-board">
-                    小地名
-                  </div>
-                  <div class="flex3 flex-board">
-                    漳河
-                  </div>
-                  <div class="flex1 flex-board">
-                    林班
-                  </div>
-                  <div class="flex2 flex-board">
-                    1
-                  </div>
-                  <div class="flex1 flex-board">
-                    小时
-                  </div>
-                  <div class="flex2 flex-board">
-                    0-10
-                  </div>
-                </div>
-                <div class="one-line">
-                  <div class="flex1 flex-board">
-                    面积
-                  </div>
-                  <div class="flex1 flex-board">
-                    观音岩村
-                  </div>
-                  <div class="flex1 flex-board">
-                    主要树种
-                  </div>
-                  <div class="flex1 flex-board">
-                    袁二狗
-                  </div>
-                </div>
-                <div class="one-line">
-                  <div class="flex1 flex-board">
-                    株数
-                  </div>
-                  <div class="flex1 flex-board">
-                    观音岩村
-                  </div>
-                  <div class="flex1 flex-board">
-                    林种
-                  </div>
-                  <div class="flex1 flex-board">
-                    防护林（公）
-                  </div>
-                </div>
-                <div class="one-line">
-                  <div class="flex1 flex-board">
-                    林地使用期
-                  </div>
-                  <div class="flex1 flex-board">
-                    30年
-                  </div>
-                  <div class="flex1 flex-board">
-                    终止日期
-                  </div>
-                  <div class="flex1 flex-board">
-                    2037-12-31
+                  <div class="one-line">
+                    <div class="flex1 flex-board">
+                      林地使用期
+                    </div>
+                    <div class="flex1 flex-board">
+                      30年
+                    </div>
+                    <div class="flex1 flex-board">
+                      终止日期
+                    </div>
+                    <div class="flex1 flex-board">
+                      2037-12-31
+                    </div>
                   </div>
                 </div>
               </div>
@@ -202,38 +266,97 @@
   </div>
 </template>
 <script>
+  import { getUserCaptial, getTxInfo, getFfInfo } from '/api/user'
+  import { getCqz } from '/api/team'
   import YShelf from '/components/shelf'
   export default {
     data () {
       return {
         activeName: 'first',
+        checkedOn: true,
+        coin: {
+          garden_coin: '0',
+          reward: '0',
+          balance: ''
+        },
         teamList: [
-          {
-            id: 1,
-            user_name: '我是大西瓜',
-            true_name: '李二狗',
-            level: 1,
-            pre_code: 6897,
-            yes_cost: 50000,
-            all_cost: 100000,
-            team_cost: 500000,
-            add_time: new Date()
-          }
-        ]
+        ],
+        rewardList: [
+        ],
+        user_name: '',
+        cqz_mj: '0'
       }
     },
     components: {
       YShelf
     },
     methods: {
+      getState (state) {
+        if (state === '4') {
+          return '失效'
+        } else if (state === '1') {
+          return '待付款'
+        } else if (state === '2') {
+          return '待收货'
+        } else if (state === '3') {
+          return '已完成'
+        }
+      },
       safeSave () {
+      },
+      chongzhi () {
+        this.$message.error('这个地方产品经理还没想好怎么做！我也很难过！')
+      },
+      _getTxInfo () {
+        getTxInfo().then(res => {
+          if (res.code === 1) {
+            this.teamList = res.data
+          } else {
+            this.$message.error(res.message)
+            this.teamList = []
+          }
+        })
+      },
+      _getFfInfo () {
+        getFfInfo().then(res => {
+          if (res.code === 1) {
+            console.log(res)
+            this.rewardList = res.data
+          } else {
+            this.$message.error(res.message)
+            this.rewardList = []
+          }
+        })
       }
+    },
+    created () {
+      getCqz().then(res => {
+        let data = res.data
+        this.user_name = (data.real_name === '' ? data.user_name : data.real_name)
+        this.cqz_mj = data.cqz_mj === '' ? 0 : data.cqz_mj
+      })
+      this._getTxInfo()
+      this._getFfInfo()
+      getUserCaptial().then(res => {
+        this.coin = res.data
+      })
     }
   }
 </script>
 <style lang="scss" scoped>
   .support {
     color: #999;
+    .check__box{
+      span{
+        cursor: pointer;
+        + span{
+          margin-left: 15px;
+        }
+        &.checked-on{
+            color: #98AFEE;
+        }
+      }
+    }
     .cqz{
       margin-bottom: 20px;
       border: 1px solid #bbb;

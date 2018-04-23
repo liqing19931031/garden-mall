@@ -76,6 +76,9 @@
               prop="user_id"
               label="查看下属成员"
               width="130">
+              <template scope='scope'>
+                <img width='40' style="cursor: pointer" src="/static/images/da.png" alt="">
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -136,7 +139,6 @@
       },
       _getTeamDetail () {
         getTeamDetail().then(res => {
-          console.log(res.data)
           this.teamMessage = res.data
         })
       },
