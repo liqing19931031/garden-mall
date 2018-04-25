@@ -40,7 +40,7 @@
                   <div class="message-card__content">
                     <span><em style="font-size: 24px">￥{{coin.reward}}</em>可用</span>
                     <div class="">
-                      <button type="primary" name="button" @click='chongzhi'>充值</button>
+                      <button type="primary" name="button" @click='chongzhi'>提现</button>
                       <router-link to="/home">
                         <button type="default" name="button">去购物</button>
                       </router-link>
@@ -320,7 +320,6 @@
       _getFfInfo () {
         getFfInfo().then(res => {
           if (res.code === 1) {
-            console.log(res)
             this.rewardList = res.data
           } else {
             this.$message.error(res.message)

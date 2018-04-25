@@ -69,7 +69,7 @@ export default new Router({
         {path: 'coupon', name: '我的优惠', component: coupon},
         {path: 'support', name: '售后服务', component: support},
         {path: 'aihuishou', name: '以旧换新', component: aihuishou},
-        {path: 'childtree', name: '我的团队', component: childTree}
+        {path: 'childtree', name: 'myteam', component: childTree}
       ]
     },
     {path: '/checkout', name: 'checkout', component: checkout},

@@ -6,7 +6,7 @@ let commonParams = {
   typ: 'json',
   c: 'user'
 }
-// 获取订单列表
+// 获取team列表
 export const getTeamList = (params) => {
   return http.fetchGet('', {...commonParams, a: 'tdList', ...params})
 }

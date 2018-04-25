@@ -24,73 +24,59 @@ export default {
       user_id: '',
       treeList: [],
       data: {
-        name: '李先生',
-        children: [
-          {
-            name: '王先生',
-            children: [
-              {
-                name: '黄先森'
-              },
-              {
-                name: '黄先森'
-              },
-              {
-                name: '黄先森'
-              }
-            ]
-          },
-          {
-            name: '王先生',
-            children: [
-              {
-                name: '黄先森'
-              },
-              {
-                name: '黄先森'
-              },
-              {
-                name: '黄先森'
-              }
-            ]
-          },
-          {
-            name: '王先生',
-            children: [
-              {
-                name: '黄先森'
-              },
-              {
-                name: '黄先森'
-              },
-              {
-                name: '黄先森'
-              }
-            ]
-          }
-        ]
+        name: '李先生'
       }
     }
   },
   created () {
     this.user_id = this.$route.query.userId
-    this._getTeamList()
   },
   mounted () {
-    let that = this
     this.user_id = this.$route.query.userId
     this.myChart = echarts.init(document.getElementById('myChart'))
-    this.myChart.setOption(that.setOptions(that.data))
+    getTeamList().then(res => {
+      if (res.code === 1) {
+        this.data.name = res.data[0].user_name
+        this.data.dataIndex = 0
+        this.data.user_id = res.data[0].user_id
+        this.data.value = res.data[0].team_cost
+        this.data.level = res.data[0].level
+      }
+      this._getTeamList()
+    })
   },
   methods: {
-    _getTeamList (index = 1) {
+    _getTeamList (level = 1, index = 0) {
+      let that = this
       getTeamList({pid: this.user_id}).then(res => {
         if (res.code === 1) {
           let arys = []
           res.data.forEach(item => {
-            arys.push({dataIndex: index + 1, ...item})
+            arys.push({dataIndex: index + 1, name: item.user_name, value: item.all_cost, user_id: item.user_id, level: item.level})
           })
-          console.log(arys)
+          this.data.children = arys
+          this.myChart.setOption(that.setOptions(that.data))
+          this.myChart.on('click', params => {
+            if (params.data.dataIndex === 1) {
+              getTeamList({pid: params.data.user_id}).then(res => {
+                if (res.code === 1) {
+                  let arys = []
+                  res.data.forEach(item => {
+                    arys.push({dataIndex: 2, name: item.user_name, value: item.all_cost, user_id: item.user_id, level: item.level})
+                  })
+                  this.data.children.forEach((item, index) => {
+                    if (item.user_id === params.data.user_id) {
+                      this.$set(this.data.children, index, {...this.data.children[index], children: arys})
+                      this.myChart.setOption(that.setOptions(that.data))
+                    }
+                  })
+                }
+              })
+            } else if (params.data.dataIndex === 2) {
+              this.$router.push({path: '/user/childTree', query: {userId: params.data.user_id}})
+              location.reload()
+            }
+          })
         } else {
           this.$message({
             type: 'error',
@@ -113,14 +99,22 @@ export default {
             right: '2%',
             top: '8%',
             bottom: '20%',
-            symbol: 'emptyCircle',
+            symbol: 'circle',
             symbolSize: 30,
             orient: 'vertical',
-            expandAndCollapse: true,
+            expandAndCollapse: false,
             itemStyle: {
+              borderColor: 'white',
               color: function (params) {
-                return 'black'
-              }
+                if (params.data.dataIndex === 0) {
+                  return '#17b4ff'
+                } else if (params.data.dataIndex === 1) {
+                  return '#fabf37'
+                } else if (params.data.dataIndex === 2) {
+                  return '#fc5c4c'
+                }
+              },
+              borderWidth: 1
             },
             label: {
               normal: {
