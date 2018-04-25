@@ -6,7 +6,7 @@ import VueLazyload from 'vue-lazyload'
 import infiniteScroll from 'vue-infinite-scroll'
 import VueCookie from 'vue-cookie'
 import { userInfo } from './api'
-import { Button, Pagination, Checkbox, Icon, Autocomplete, Loading, Message, Notification, Steps, Step, Table, TableColumn, Input, Dialog, Select, Option, Carousel, CarouselItem, Cascader, Tabs, TabPane } from 'element-ui'
+import { MessageBox, Button, Pagination, Checkbox, Icon, Autocomplete, Loading, Message, Notification, Steps, Step, Table, TableColumn, Input, Dialog, Select, Option, Carousel, CarouselItem, Cascader, Tabs, TabPane } from 'element-ui'
 import { setStore, getStore } from '/utils/storage'
 Vue.use(Button)
 Vue.use(Pagination)
@@ -30,6 +30,7 @@ Vue.use(Loading.directive)
 Vue.prototype.$loading = Loading.service
 Vue.prototype.$notify = Notification
 Vue.prototype.$message = Message
+Vue.prototype.$alert = MessageBox
 Vue.use(infiniteScroll)
 Vue.use(VueCookie)
 Vue.use(VueLazyload, {
@@ -41,11 +42,6 @@ Vue.use(VueLazyload, {
 Vue.config.productionTip = false
 const whiteList = ['/home', '/goods', '/login', '/register', '/goodsDetails', '/search', '/refreshsearch'] // 不需要登陆的页面
 router.beforeEach(function (to, from, next) {
-  // let params = {
-  //   params: {
-  //     token: getStore('token')
-  //   }
-  // }
   if (getStore('login')) {
     userInfo().then(res => {
       if (res.code === 1) {
