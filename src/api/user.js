@@ -58,3 +58,14 @@ export const getTxInfo = (params) => {
 export const getFfInfo = (params) => {
   return http.fetchGet('', {...commonParams, a: 'ffInfo', params})
 }
+
+export const canTixian = (params) => {
+  return http.fetchGet('', {...commonParams, a: 'canTixian', params})
+}
+
+export const applyTixian = (params) => {
+  return http.fetchPost(`?${qs.stringify({
+    ...commonParams,
+    a: 'applyTixian'
+  })}`, params)
+}

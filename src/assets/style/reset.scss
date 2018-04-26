@@ -89,3 +89,16 @@ input[type="reset"] {
     text-align: center;
   }
 }
+.el-dialog--small{
+  width: 280px!important;
+  .el-input{
+    width: 200px!important;
+    float: left;
+  }
+  span.money{
+    line-height: 36px;
+    width: 20px;
+    display: block;
+    float: left;
+  }
+}

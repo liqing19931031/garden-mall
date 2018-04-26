@@ -13,7 +13,7 @@
 <script>
 import echarts from 'echarts'
 
-import { getTeamList } from '/api/team'
+import { getTeamList, getTeamHead } from '/api/team'
 import YShelf from '/components/shelf'
 export default {
   components: {
@@ -34,9 +34,9 @@ export default {
   mounted () {
     this.user_id = this.$route.query.userId
     this.myChart = echarts.init(document.getElementById('myChart'))
-    getTeamList().then(res => {
+    getTeamHead({user_id: this.user_id}).then(res => {
       if (res.code === 1) {
-        this.data.name = res.data[0].user_name
+        this.data.name = res.data[0].true_name !== '' ? res.data[0].true_name : res.data[0].user_name
         this.data.dataIndex = 0
         this.data.user_id = res.data[0].user_id
         this.data.value = res.data[0].team_cost
@@ -46,13 +46,24 @@ export default {
     })
   },
   methods: {
+    getLevel (state) {
+      if (state === '0') {
+        return '无等级'
+      } else if (state === '1') {
+        return '区代理'
+      } else if (state === '2') {
+        return '市代理'
+      } else if (state === '3') {
+        return '省代理'
+      }
+    },
     _getTeamList (level = 1, index = 0) {
       let that = this
       getTeamList({pid: this.user_id}).then(res => {
         if (res.code === 1) {
           let arys = []
           res.data.forEach(item => {
-            arys.push({dataIndex: index + 1, name: item.user_name, value: item.all_cost, user_id: item.user_id, level: item.level})
+            arys.push({dataIndex: index + 1, name: item.true_name !== '' ? item.true_name : item.user_name, value: item.all_cost, user_id: item.user_id, level: item.level})
           })
           this.data.children = arys
           this.myChart.setOption(that.setOptions(that.data))
@@ -86,20 +97,20 @@ export default {
       })
     },
     setOptions (data) {
+      let that = this
       let obj = {
-        tooltip: {
-          trigger: 'item',
-          triggerOn: 'mousemove'
-        },
         series: [
           {
             type: 'tree',
             data: [data],
             left: '2%',
             right: '2%',
-            top: '8%',
+            top: '12%',
             bottom: '20%',
             symbol: 'circle',
+            symbolSize: function (value, params) {
+              return (4 - params.data.dataIndex) * 30
+            },
             orient: 'vertical',
             expandAndCollapse: false,
             itemStyle: {
@@ -117,10 +128,25 @@ export default {
             },
             label: {
               normal: {
-                position: 'top',
+                position: 'inside',
                 verticalAlign: 'middle',
                 align: 'center',
-                fontSize: 14
+                fontSize: 16,
+                lineHeight: 24,
+                formatter: function (params) {
+                  return [
+                    `{a| ${params.data.name}}`,
+                    `{a| ${that.getLevel(params.data.level)}}`,
+                    `{a| ¥${params.data.value}}`
+                  ].join('\n')
+                },
+                rich: {
+                  a: {
+                    fontSize: 14,
+                    color: '#333',
+                    lineHeight: 20
+                  }
+                }
               }
             },
             leaves: {

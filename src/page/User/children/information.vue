@@ -40,7 +40,7 @@
                   <div class="message-card__content">
                     <span><em style="font-size: 24px">￥{{coin.reward}}</em>可用</span>
                     <div class="">
-                      <button type="primary" name="button" @click='chongzhi'>提现</button>
+                      <button type="primary" name="button" @click='tixian'>提现</button>
                       <router-link to="/home">
                         <button type="default" name="button">去购物</button>
                       </router-link>
@@ -49,7 +49,7 @@
                 </div>
                 <div class="message-card">
                   <div class="message-card__title">
-                    抵押金
+                    抵用卷
                   </div>
                   <div class="message-card__content">
                     <span><em style="font-size: 24px">￥{{coin.integral}}</em>可用</span>
@@ -263,21 +263,31 @@
         </div>
       </div>
     </y-shelf>
+    <el-dialog title="提现奖励金" :visible.sync="dialogTableVisible">
+      <span class="money">¥</span>
+      <el-input v-model="money" auto-complete="off"></el-input>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="qutixian">确 定</el-button>
+    </div>
+    </el-dialog>
   </div>
 </template>
 <script>
-  import { getUserCaptial, getTxInfo, getFfInfo } from '/api/user'
+  import { getUserCaptial, getTxInfo, getFfInfo, canTixian, applyTixian } from '/api/user'
   import { getCqz } from '/api/team'
   import YShelf from '/components/shelf'
   export default {
     data () {
       return {
+        money: 0,
+        dialogTableVisible: false,
         activeName: 'first',
         checkedOn: true,
         coin: {
           garden_coin: '0',
           reward: '0',
-          balance: ''
+          balance: '0',
+          integral: '0'
         },
         teamList: [
         ],
@@ -305,7 +315,44 @@
       safeSave () {
       },
       chongzhi () {
-        this.$message.error('这个地方产品经理还没想好怎么做！我也很难过！')
+        this.$alert('请联系客服！（扫屏幕右下方二维码，或者拨打公司热线）', '充值提示', {
+          confirmButtonText: '确定',
+          callback: action => {}
+        })
+      },
+      tixian () {
+        canTixian().then(res => {
+          if (res.data.flag === 1) {
+            this.dialogTableVisible = true
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+      },
+      qutixian () {
+        if (this.money === 0) {
+          this.$message({
+            type: 'warning',
+            message: '提现金额不能小于0！'
+          })
+        } else if (this.money > +this.reward) {
+          this.$message({
+            type: 'warning',
+            message: '提现金额不能大于奖励金总额！'
+          })
+        } else {
+          applyTixian({amount: this.money}).then(res => {
+            if (res.code === 1) {
+              this.$message({
+                type: 'success',
+                message: '提现成功！'
+              })
+              this.dialogTableVisible = false
+            } else {
+              this.$message.error(res.message)
+            }
+          })
+        }
       },
       _getTxInfo () {
         getTxInfo().then(res => {
