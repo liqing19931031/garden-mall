@@ -100,7 +100,6 @@ export default {
             top: '8%',
             bottom: '20%',
             symbol: 'circle',
-            symbolSize: 30,
             orient: 'vertical',
             expandAndCollapse: false,
             itemStyle: {
