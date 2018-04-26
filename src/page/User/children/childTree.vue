@@ -106,6 +106,7 @@ export default {
             left: '2%',
             right: '2%',
             top: '12%',
+            effectType: 'ripple',
             bottom: '20%',
             symbol: 'circle',
             symbolSize: function (value, params) {
@@ -115,13 +116,78 @@ export default {
             expandAndCollapse: false,
             itemStyle: {
               borderColor: 'white',
+              shadowBlur: 0,
               color: function (params) {
                 if (params.data.dataIndex === 0) {
-                  return '#17b4ff'
+                  return {
+                    type: 'radial',
+                    x: 0.5,
+                    y: 0.5,
+                    r: 0.5,
+                    colorStops: [
+                      {
+                        offset: 0, color: 'rgba(11, 138, 253, 1)'
+                      },
+                      {
+                        offset: 0.6, color: 'rgba(11, 138, 253, 1)'
+                      },
+                      {
+                        offset: 0.61, color: 'rgba(11, 138, 253, 0.5)'
+                      },
+                      {
+                        offset: 0.8, color: 'rgba(11, 138, 253, 0.5)'
+                      },
+                      {
+                        offset: 0.81, color: 'rgba(11, 138, 253, 0.2)'
+                      },
+                      {
+                        offset: 1, color: 'rgba(11, 138, 253, 0.2)'
+                      }
+                    ],
+                    globalCoord: true
+                  }
                 } else if (params.data.dataIndex === 1) {
-                  return '#fabf37'
+                  return {
+                    type: 'radial',
+                    x: 0.5,
+                    y: 0.5,
+                    r: 0.5,
+                    colorStops: [
+                      {
+                        offset: 0, color: 'rgba(250, 191, 55, 1)'
+                      },
+                      {
+                        offset: 0.7, color: 'rgba(250, 191, 55, 1)'
+                      },
+                      {
+                        offset: 0.71, color: 'rgba(250, 191, 55, 0.3)'
+                      },
+                      {
+                        offset: 1, color: 'rgba(250, 191, 55, 0.3)'
+                      }
+                    ]
+                  }
                 } else if (params.data.dataIndex === 2) {
-                  return '#fc5c4c'
+                  return {
+                    type: 'radial',
+                    x: 0.5,
+                    y: 0.5,
+                    r: 0.5,
+                    colorStops: [
+                      {
+                        offset: 0, color: 'rgba(241, 99, 85, 1)'
+                      },
+                      {
+                        offset: 0.7, color: 'rgba(241, 99, 85, 1)'
+                      },
+                      {
+                        offset: 0.71, color: 'rgba(241, 99, 85, 0.3)'
+                      },
+                      {
+                        offset: 1, color: 'rgba(241, 99, 85, 0.3)'
+                      }
+                    ]
+                  }
                 }
               },
               borderWidth: 1

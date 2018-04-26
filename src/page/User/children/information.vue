@@ -49,7 +49,7 @@
                 </div>
                 <div class="message-card">
                   <div class="message-card__title">
-                    抵用卷
+                    抵用券
                   </div>
                   <div class="message-card__content">
                     <span><em style="font-size: 24px">￥{{coin.integral}}</em>可用</span>

@@ -162,11 +162,14 @@ export default {
       this.registxt = '注册中...'
       if (!this.ruleForm.invite_code) {
         this.$message.error('邀请码不能为空!')
+        this.allowSend = true
+        this.registxt = '注册'
         return false
       }
       if (!this.ruleForm.username || !this.ruleForm.password) {
         this.message('账号密码不能为空!')
         this.registxt = '注册'
+        this.allowSend = true
         return false
       }
       register(this.ruleForm).then(res => {
@@ -176,6 +179,7 @@ export default {
         } else {
           this.message(res.message)
           captcha.reset()
+          this.allowSend = true
           this.regist = '注册'
           return false
         }
