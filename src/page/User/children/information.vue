@@ -66,6 +66,7 @@
                 <div v-if="teamList.length">
                   <el-table
                     :data="teamList"
+                    height="350"
                     style="width: 100%">
                     <el-table-column
                       prop="add_time"
@@ -89,13 +90,6 @@
                         {{getState(scope.row.order_status)}}
                       </template>
                     </el-table-column>
-                    <el-table-column
-                      prop="yes_cost"
-                      label="操作">
-                      <template scope='scope'>
-                        <button type="default" name="button">删除</button>
-                      </template>
-                    </el-table-column>
                   </el-table>
                 </div>
                 <div class='message-content' style="text-align: center" v-else>
@@ -108,6 +102,7 @@
                 <div v-if="rewardList.length">
                   <el-table
                     :data="rewardList"
+                    height="350"
                     style="width: 100%">
                     <el-table-column
                       prop="create_time"
@@ -131,13 +126,6 @@
                         到账成功
                       </template>
                     </el-table-column>
-                    <el-table-column
-                      prop="yes_cost"
-                      label="操作">
-                      <template scope='scope'>
-                        <button type="default" name="button">删除</button>
-                      </template>
-                    </el-table-column>
                   </el-table>
                 </div>
                 <div class='message-content' style="text-align: center" v-else>
@@ -148,6 +136,7 @@
               </div>
             </el-tab-pane>
             <el-tab-pane label="产权证" name="second">
+              <el-button type="default" size="small" style="margin-left: 15px" @click='quduihuan'>兑换园林币</el-button>
               <div style="padding: 15px">
                 <div class="cqz">
                   <div class="one-line">
@@ -264,7 +253,14 @@
       <span class="money">¥</span>
       <el-input v-model="money" auto-complete="off"></el-input>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="qutixian">确 定</el-button>
+      <el-button type="primary" @click="qutixian">确 定</el-button>
+    </div>
+    </el-dialog>
+    <el-dialog title="兑换园林币" :visible.sync="dialog">
+      <span class="money">¥</span>
+      <el-input v-model="coinMoney" auto-complete="off"></el-input>
+      <div slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="quduihuan">确 定</el-button>
     </div>
     </el-dialog>
   </div>
@@ -277,7 +273,9 @@
     data () {
       return {
         money: 0,
+        coinMoney: 0,
         dialogTableVisible: false,
+        dialog: false,
         activeName: 'first',
         checkedOn: true,
         coin: {
@@ -330,7 +328,7 @@
         if (this.money < 100) {
           this.$message({
             type: 'warning',
-            message: '提现金额不能小于100！'
+            message: '奖励金不足，不能提现'
           })
         } else if (this.money > +this.reward) {
           this.$message({
@@ -348,6 +346,17 @@
             } else {
               this.$message.error(res.message)
             }
+          })
+        }
+      },
+      quduihuan () {
+        if (this.coinMoney <= (10 * +this.cqz_mj)) {
+          this.$message.error('该功能暂未开放！')
+          // this.dialog = true
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '兑换数额不能超过您所有的最大值！'
           })
         }
       },

@@ -180,7 +180,6 @@
       },
       // 选择默认地址
       checkDefault (id) {
-        console.log(id)
         setDefaultAdd({address_id: id}).then(res => {
           if (res.code === 1) {
             this.$message({
@@ -205,19 +204,18 @@
         this.cartList.forEach((item, index) => {
           goods[item.goods_id] = this.num[index]
         })
-        console.log(this.addressId, createOrder)
-        // createOrder({
-        //   address_id: this.addressId,
-        //   goods
-        // }).then(res => {
-        //   if (res.code === 1) {
-        //     this.payment(res.data.order_id)
-        //   } else {
-        //     this.$message.error(res.message)
-        //     this.submitOrder = '提交订单'
-        //     this.submit = false
-        //   }
-        // })
+        createOrder({
+          address_id: this.addressId,
+          goods
+        }).then(res => {
+          if (res.code === 1) {
+            this.payment(res.data.order_id)
+          } else {
+            this.$message.error(res.message)
+            this.submitOrder = '提交订单'
+            this.submit = false
+          }
+        })
       },
       // 付款
       payment (orderId) {

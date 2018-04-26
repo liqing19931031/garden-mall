@@ -33,3 +33,7 @@ export const cancelOrder = (params) => {
 export const delOrder = (params) => {
   return http.fetchGet('', {...commonParams, a: 'delOrder', ...params})
 }
+
+export const qrshOrder = (params) => {
+  return http.fetchGet('', {...commonParams, a: 'qrsh', ...params})
+}
