@@ -40,6 +40,7 @@
           <p style="font-size: 14px;font-weight: bolder;"> <span style="padding-right:47px">商品总计：</span>
             <span style="font-size: 16px;font-weight: 500;line-height: 32px;">¥ {{goods_amount}}</span>
           </p>
+          <p><span style="padding-right:30px">抵用券：</span><span style="font-weight: 700;">- ¥ {{+integral_money > +goods_amount ? goods_amount : integral_money}}</span></p>
           <p><span style="padding-right:30px">运费：</span><span style="font-weight: 700;">+ ¥ {{shipping_fee}}</span></p>
         </div>
         <div>
@@ -73,6 +74,7 @@
         productId: '',
         num: '',
         mobile: '',
+        integral_money: '',
         userId: '',
         goods_amount: '',
         consignee: '',
@@ -126,6 +128,7 @@
           this.mobile = res.data.mobile
           this.goods_amount = res.data.goods_amount
           this.cartList = res.data.goods
+          this.integral_money = res.data.integral_money
           this.shipping_fee = res.data.shipping_fee
           this.order_amount = res.data.order_amount
         })

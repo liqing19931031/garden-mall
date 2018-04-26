@@ -26,7 +26,11 @@ export const userInfo = () => {
 }
 // 注册账号
 export const register = (params) => {
-  return http.fetchPost('/register', params)
+  return http.fetchPost(`?${qs.stringify({
+    ...commonParams,
+    a: 'register',
+    c: 'passport'
+  })}`, params)
 }
 // 上传图片
 export const upload = (params) => {

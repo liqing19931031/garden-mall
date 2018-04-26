@@ -26,11 +26,11 @@
                   </div>
                   <div class="message-card__content">
                     <span><em style="font-size: 24px">{{coin.garden_coin}}</em>可用</span>
-                    <div class="">
+                    <!-- <div class="">
                       <router-link to="/home">
                         <button type="default" name="button">去购物</button>
                       </router-link>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
                 <div class="message-card">
@@ -41,9 +41,6 @@
                     <span><em style="font-size: 24px">￥{{coin.reward}}</em>可用</span>
                     <div class="">
                       <button type="primary" name="button" @click='tixian'>提现</button>
-                      <router-link to="/home">
-                        <button type="default" name="button">去购物</button>
-                      </router-link>
                     </div>
                   </div>
                 </div>
@@ -113,25 +110,25 @@
                     :data="rewardList"
                     style="width: 100%">
                     <el-table-column
-                      prop="add_time"
+                      prop="create_time"
                       label="日期">
                     </el-table-column>
                     <el-table-column
-                      prop="goods_name"
+                      prop="event"
                       label="名称">
                     </el-table-column>
                     <el-table-column
-                      prop="order_amount"
+                      prop="bonus_detail"
                       label="金额">
                       <template scope='scope'>
-                        ￥{{scope.row.order_amount}}
+                        {{scope.row.bonus_detail}}
                       </template>
                     </el-table-column>
                     <el-table-column
                       prop="order_status"
                       label="状态">
                       <template scope='scope'>
-                        {{getState(scope.row.order_status)}}
+                        到账成功
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -330,10 +327,10 @@
         })
       },
       qutixian () {
-        if (this.money === 0) {
+        if (this.money < 100) {
           this.$message({
             type: 'warning',
-            message: '提现金额不能小于0！'
+            message: '提现金额不能小于100！'
           })
         } else if (this.money > +this.reward) {
           this.$message({
