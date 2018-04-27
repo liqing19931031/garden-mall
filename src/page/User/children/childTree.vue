@@ -42,7 +42,6 @@ export default {
       if (res.code === 1) {
         this.data.name = res.data[0].true_name !== '' ? res.data[0].true_name : res.data[0].user_name
         this.data.dataIndex = 0
-        this.data.myIndex = '10'
         this.data.user_id = res.data[0].user_id
         this.data.value = res.data[0].team_cost
         this.data.level = res.data[0].level
@@ -101,13 +100,16 @@ export default {
                 user_id: item.user_id,
                 value: item.team_cost,
                 dataIndex: params.data.dataIndex + 1,
-                myIndex: params.data.myIndex + '_' + (10 + index).toString(),
                 name: item.true_name === '' ? item.user_name : item.true_name,
                 level: item.level,
                 children: []
               })
             })
-            this.treeList = [...this.treeList, ...arys]
+            let userids = []
+            this.treeList.forEach((item, index) => {
+              userids.push(item.user_id)
+            })
+            this.treeList = userids.includes(arys[0].user_id) ? this.treeList : [...this.treeList, ...arys]
             this.myChart.setOption(that.setOptions(this.chushi(this.treeList, 0)[0]))
           }
         } else {
@@ -119,7 +121,6 @@ export default {
       })
     },
     setOptions (data) {
-      console.log(data)
       let that = this
       let obj = {
         series: [
@@ -133,7 +134,11 @@ export default {
             bottom: '20%',
             symbol: 'circle',
             symbolSize: function (value, params) {
-              return (4 - params.data.dataIndex) * 30
+              if (params.data.dataIndex < 3) {
+                return (4 - params.data.dataIndex) * 30
+              } else {
+                return 60
+              }
             },
             orient: 'vertical',
             expandAndCollapse: false,
@@ -190,7 +195,7 @@ export default {
                       }
                     ]
                   }
-                } else if (params.data.dataIndex === 2) {
+                } else {
                   return {
                     type: 'radial',
                     x: 0.5,
