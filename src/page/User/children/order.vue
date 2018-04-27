@@ -8,7 +8,7 @@
               <div class="first">
                 <div>
                   <span class="date" v-text="item.createDate"></span>
-                  <span class="order-id"> 订单号： <a @click="orderDetail(item.orderId)">{{item.order_sn}}</a> </span>
+                  <span class="order-id"> 订单号： <a @click="orderDetail(item.order_id)">{{item.order_sn}}</a> </span>
                 </div>
                 <div class="f-bc">
                   <span class="num">数量</span>

@@ -60,12 +60,15 @@
               label="昨日消费"
               width="120">
               <template scope="scope">
-                {{scope.row.yes_cost === '' ? '0' : scope.row.yes_cost}}
+                {{scope.row.yes_cost === '' ? '0.00' : scope.row.yes_cost}}
               </template>
             </el-table-column>
             <el-table-column
               prop="team_cost"
               label="该团队消费总业绩">
+              <template scope="scope">
+                {{scope.row.team_cost === '' ? '0.00' : scope.row.team_cost}}
+              </template>
             </el-table-column>
             <el-table-column
               prop='add_time'
@@ -87,9 +90,6 @@
         <div v-else>
           <div style="padding: 80px 0;text-align: center">
             <div style="font-size: 20px">暂无团队信息～请分享您的邀请码</div>
-            <div style="margin: 20px ">
-              <y-button text="添加地址" @btnClick="update()"></y-button>
-            </div>
           </div>
         </div>
       </div>
@@ -129,7 +129,9 @@
     },
     methods: {
       getLevel (state) {
-        if (state === '0') {
+        if (state === '') {
+          return '无等级'
+        } else if (state === '0') {
           return '无等级'
         } else if (state === '1') {
           return '区代理'

@@ -78,24 +78,26 @@
           <!--商品-->
           <div class="goods-table">
             <div class="cart-items" v-for="(item,i) in orderList" :key="i">
-              <a @click="goodsDetails(item.productId)" class="img-box"><img :src="item.productImg" alt=""></a>
+              <a @click="goodsDetails(item.goods_id)" class="img-box"><img :src="item.productImg" alt=""></a>
               <div class="name-cell ellipsis">
-                <a @click="goodsDetails(item.productId)" title="" target="_blank">{{item.productName}}</a>
+                <a @click="goodsDetails(item.goods_id)" title="" target="_blank">{{item.goods_name}}</a>
               </div>
               <div class="n-b">
-                <div class="price">¥ {{item.salePrice}}</div>
-                <div class="goods-num">{{item.productNum}}</div>
-                <div class="subtotal"> ¥ {{item.salePrice * item.productNum}}</div>
+                <div class="price">¥ {{item.goods_price}}</div>
+                <div class="goods-num">{{item.goods_number}}</div>
+                <div class="subtotal"> ¥ {{(+item.goods_price * +item.goods_number).toFixed(2)}}</div>
               </div>
             </div>
           </div>
           <!--合计-->
           <div class="order-discount-line">
-            <p style="font-size: 14px;font-weight: bolder;"> <span style="padding-right:47px">商品总计：</span>
+            <p class="my-price" style="font-size: 14px;font-weight: bolder;"> <span style="padding-right:47px">商品总计：</span>
               <span style="font-size: 16px;font-weight: 500;line-height: 32px;">¥ {{orderTotal}}</span>
             </p>
-            <p><span style="padding-right:30px">运费：</span><span style="font-weight: 700;">+ ¥ 0.00</span></p>
-            <p class="price-total"><span>应付金额：</span><span class="price-red">¥ {{orderTotal}}</span></p>
+            <p class="my-price"><span style="padding-right:30px">运&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp费：</span><span style="font-weight: 700;">+ ¥ {{shippingFee}}</span></p>
+            <p class="my-price"><span style="padding-right:30px">抵&nbsp&nbsp用&nbsp&nbsp券：</span><span style="font-weight: 700;">- ¥ {{integralMoney}}</span></p>
+            <p class="my-price"><span style="padding-right:30px">余额支付：</span><span style="font-weight: 700;">- ¥ {{(+orderAmount - +integralMoney).toFixed(2)}}</span></p>
+            <p class="price-total"><span>应付金额：</span><span class="price-red">¥ {{orderAmount}}</span></p>
           </div>
 
           <div class="gray-sub-title cart-title">
@@ -122,9 +124,8 @@
   </div>
 </template>
 <script>
-  import { getOrderDet, cancelOrder } from '/api/goods'
+  import { getOrder } from '/api/order'
   import YShelf from '/components/shelf'
-  import { getStore } from '/utils/storage'
   import countDown from '/components/countDown'
   export default {
     data () {
@@ -142,71 +143,41 @@
         closeTime: '',
         finishTime: '',
         orderTotal: '',
+        shippingFee: '',
+        integralMoney: '',
         loading: true,
-        countTime: 0
+        countTime: 0,
+        orderAmount: 0
       }
     },
     methods: {
-      message (m) {
-        this.$message.error({
-          message: m
-        })
-      },
       orderPayment (orderId) {
         window.open(window.location.origin + '#/order/payment?orderId=' + orderId)
       },
       goodsDetails (id) {
         window.open(window.location.origin + '#/goodsDetails?productId=' + id)
       },
-      _getOrderDet () {
-        let params = {
-          params: {
-            orderId: this.orderId
-          }
-        }
-        getOrderDet(params).then(res => {
-          if (res.result.orderStatus === '0') {
-            this.orderStatus = 1
-          } else if (res.result.orderStatus === '1') {
-            this.orderStatus = 2
-          } else if (res.result.orderStatus === '4') {
-            this.orderStatus = 5
-          } else if (res.result.orderStatus === '5') {
-            this.orderStatus = -1
-          } else if (res.result.orderStatus === '6') {
-            this.orderStatus = 6
-          }
-          this.orderList = res.result.goodsList
-          this.orderTotal = res.result.orderTotal
-          this.userName = res.result.addressInfo.userName
-          this.tel = res.result.addressInfo.tel
-          this.streetName = res.result.addressInfo.streetName
-          this.createTime = res.result.createDate
-          this.closeTime = res.result.closeDate
-          this.payTime = res.result.payDate
-          if (this.orderStatus === 5) {
-            this.finishTime = res.result.finishDate
-          } else {
-            this.countTime = res.result.finishDate
+      _getOrder () {
+        getOrder({order_id: this.orderId}).then(res => {
+          if (res.code === 1) {
+            this.orderTitle = '订单号：' + res.data.order_sn
+            this.orderList = res.data.goods
+            this.userName = res.data.consignee
+            this.tel = res.data.mobile
+            this.orderTotal = res.data.goods_amount
+            this.shippingFee = res.data.shipping_fee
+            this.integralMoney = res.data.integral_money
+            this.orderAmount = res.data.order_amount
+            this.orderStatus = +res.data.order_status
+            this.streetName = [res.data.province, res.data.city, res.data.district, res.data.address].join(' ')
           }
           this.loading = false
-        })
-      },
-      _cancelOrder () {
-        cancelOrder({orderId: this.orderId}).then(res => {
-          if (res.success === true) {
-            this._getOrderDet()
-          } else {
-            this.message('取消失败')
-          }
         })
       }
     },
     created () {
-      this.userId = getStore('userId')
       this.orderId = this.$route.query.orderId
-      this.orderTitle = '订单号：' + this.orderId
-      this._getOrderDet()
+      this._getOrder()
     },
     components: {
       YShelf,
@@ -272,7 +243,7 @@
     border: 1px solid #EBEBEB;
     margin-left: -80px;
   }
-  
+
   img {
     display: block;
     @include wh(80px);
@@ -286,7 +257,7 @@
       > div {
         color: #626262;
         font-weight: 700;
-        width: 150px;
+        width: 160px;
         text-align: center;
       }
     }
@@ -295,17 +266,11 @@
       align-items: center;
       justify-content: space-between;
       height: 110px;
-      padding: 15px 0 15px 111px;
+      padding: 15px 24px 15px 111px;
       border-bottom: 1px solid #EFEFEF;
       a {
         color: #333;
       }
-    }
-    .price {
-      padding-left: 107px;
-    }
-    .goods-num {
-      padding-left: 60px;
     }
   }
 
@@ -319,6 +284,19 @@
       text-align: right;
       font-size: 14px;
       font-weight: bolder;
+    }
+    .my-price{
+      width: 20%;
+      margin-left: 80%;
+      display: flex;
+      justify-content: space-between;
+      span{
+        &:nth-child(1){
+          display: flex;
+          width: 120px;
+          flex: space-between;
+        }
+      }
     }
   }
 
@@ -342,7 +320,7 @@
       flex: 1;
       .f-bc {
         > span {
-          width: 112px;
+          width: 160px;
           text-align: center;
         }
       }

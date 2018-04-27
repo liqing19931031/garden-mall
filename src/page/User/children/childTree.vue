@@ -34,15 +34,27 @@ export default {
   mounted () {
     this.user_id = this.$route.query.userId
     this.myChart = echarts.init(document.getElementById('myChart'))
+    this.myChart.on('click', params => {
+      this._getTeamList(params)
+    })
     getTeamHead({user_id: this.user_id}).then(res => {
+      let that = this
       if (res.code === 1) {
         this.data.name = res.data[0].true_name !== '' ? res.data[0].true_name : res.data[0].user_name
         this.data.dataIndex = 0
         this.data.user_id = res.data[0].user_id
         this.data.value = res.data[0].team_cost
         this.data.level = res.data[0].level
+        this.treeList.push({
+          dataIndex: '10',
+          pid: 0,
+          user_id: res.data[0].user_id,
+          value: res.data[0].team_cost,
+          level: res.data[0].level,
+          children: []
+        })
       }
-      this._getTeamList()
+      this.myChart.setOption(that.setOptions(that.data))
     })
   },
   methods: {
@@ -55,39 +67,33 @@ export default {
         return '市代理'
       } else if (state === '3') {
         return '省代理'
+      } else {
+        return '无等级'
       }
     },
-    _getTeamList (level = 1, index = 0) {
+    _getTeamList (params) {
       let that = this
       getTeamList({pid: this.user_id}).then(res => {
         if (res.code === 1) {
-          let arys = []
-          res.data.forEach(item => {
-            arys.push({dataIndex: index + 1, name: item.true_name !== '' ? item.true_name : item.user_name, value: item.all_cost, user_id: item.user_id, level: item.level})
-          })
-          this.data.children = arys
-          this.myChart.setOption(that.setOptions(that.data))
-          this.myChart.on('click', params => {
-            if (params.data.dataIndex === 1) {
-              getTeamList({pid: params.data.user_id}).then(res => {
-                if (res.code === 1) {
-                  let arys = []
-                  res.data.forEach(item => {
-                    arys.push({dataIndex: 2, name: item.user_name, value: item.all_cost, user_id: item.user_id, level: item.level})
-                  })
-                  this.data.children.forEach((item, index) => {
-                    if (item.user_id === params.data.user_id) {
-                      this.$set(this.data.children, index, {...this.data.children[index], children: arys})
-                      this.myChart.setOption(that.setOptions(that.data))
-                    }
-                  })
-                }
+          if (res.data.length === 0) {
+            this.$message({
+              type: 'warning',
+              message: '该用户暂无下线'
+            })
+          } else {
+            let arys = []
+            res.data.forEach(item => {
+              arys.push({
+                pid: params.data.user_id,
+                id: item.user_id,
+                value: item.team_cost,
+                name: item.true_name === '' ? item.user_name : item.true_name,
+                level: item.level
               })
-            } else if (params.data.dataIndex === 2) {
-              this.$router.push({path: '/user/childTree', query: {userId: params.data.user_id}})
-              location.reload()
-            }
-          })
+            })
+            console.log(params.data.dataIndex.split('_'))
+          }
+          this.myChart.setOption(that.setOptions(that.data))
         } else {
           this.$message({
             type: 'error',
@@ -203,7 +209,7 @@ export default {
                   return [
                     `{a| ${params.data.name}}`,
                     `{a| ${that.getLevel(params.data.level)}}`,
-                    `{a| ¥${params.data.value}}`
+                    `{a| ¥${params.data.value === '' ? '0.00' : params.data.value}}`
                   ].join('\n')
                 },
                 rich: {
