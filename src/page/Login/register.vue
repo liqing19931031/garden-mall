@@ -77,7 +77,6 @@ import YFooter from '/common/footer'
 import YButton from '/components/YButton'
 import { register, getCode, getImgCode } from '/api/index.js'
 require('../../../static/geetest/gt.js')
-var captcha
 export default {
   data () {
     return {
@@ -86,7 +85,7 @@ export default {
       preImg: this.$store.state.baseIp + '/index.php?m=default&c=public&a=captcha',
       ruleForm: {
         username: '',
-        passwrod: '',
+        passwrord: '',
         invite_code: '',
         sms_code: '',
         captcha: ''
@@ -173,14 +172,13 @@ export default {
         return false
       }
       register(this.ruleForm).then(res => {
-        if (res.success === true) {
+        if (res.code === 1) {
           this.messageSuccess()
-          this.toLogin()
+          this.$router.push('/login')
         } else {
           this.message(res.message)
-          captcha.reset()
           this.allowSend = true
-          this.regist = '注册'
+          this.registxt = '注册'
           return false
         }
       })

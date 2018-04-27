@@ -86,7 +86,7 @@
         </div>
         <div v-else>
           <div style="padding: 80px 0;text-align: center">
-            <div style="font-size: 20px">你还未添加收货地址</div>
+            <div style="font-size: 20px">暂无团队信息～请分享您的邀请码</div>
             <div style="margin: 20px ">
               <y-button text="添加地址" @btnClick="update()"></y-button>
             </div>

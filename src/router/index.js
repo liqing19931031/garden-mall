@@ -13,6 +13,7 @@ const orderList = () => import('/page/User/children/order.vue')
 const information = () => import('/page/User/children/information.vue')
 const addressList = () => import('/page/User/children/addressList.vue')
 const childTree = () => import('/page/User/children/ChildTree.vue')
+const payrank = () => import('/page/User/children/payrank.vue')
 const coupon = () => import('/page/User/children/coupon.vue')
 const aihuishou = () => import('/page/User/children/aihuishou.vue')
 const support = () => import('/page/User/children/support.vue')
@@ -69,7 +70,8 @@ export default new Router({
         {path: 'coupon', name: '我的优惠', component: coupon},
         {path: 'support', name: '售后服务', component: support},
         {path: 'aihuishou', name: '以旧换新', component: aihuishou},
-        {path: 'childtree', name: 'myteam', component: childTree}
+        {path: 'childtree', name: 'myteam', component: childTree},
+        {path: 'payrank', name: 'payrank', component: payrank}
       ]
     },
     {path: '/checkout', name: 'checkout', component: checkout},

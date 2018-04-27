@@ -71,7 +71,7 @@
   </div>
 </template>
 <script>
-  import { getOrderList, cancelOrder, delOrder } from '/api/order'
+  import { getOrderList, cancelOrder, delOrder, qrshOrder } from '/api/order'
   import YShelf from '/components/shelf'
   export default {
     data () {
@@ -163,7 +163,17 @@
         })
       },
       _recOrder (orderId) {
-
+        qrshOrder({order_id: orderId}).then(res => {
+          if (res.code === 1) {
+            this.$message({
+              type: 'success',
+              message: '确认收货成功！'
+            })
+            this._getOrderList()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
       }
     },
     created () {

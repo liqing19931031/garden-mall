@@ -169,7 +169,7 @@
           if (data.length) {
             this.addList = data
             data.forEach(item => {
-              if (!+item.isDefault) {
+              if (+item.is_default) {
                 this.addressId = item.address_id
               }
             })
