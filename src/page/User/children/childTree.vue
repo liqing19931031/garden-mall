@@ -42,12 +42,15 @@ export default {
       if (res.code === 1) {
         this.data.name = res.data[0].true_name !== '' ? res.data[0].true_name : res.data[0].user_name
         this.data.dataIndex = 0
+        this.data.myIndex = '10'
         this.data.user_id = res.data[0].user_id
         this.data.value = res.data[0].team_cost
         this.data.level = res.data[0].level
+        this.data.children = []
         this.treeList.push({
-          dataIndex: '10',
+          dataIndex: 0,
           pid: 0,
+          name: res.data[0].true_name !== '' ? res.data[0].true_name : res.data[0].user_name,
           user_id: res.data[0].user_id,
           value: res.data[0].team_cost,
           level: res.data[0].level,
@@ -58,6 +61,16 @@ export default {
     })
   },
   methods: {
+    chushi (arys, pid = 0) {
+      let list = []
+      arys.forEach((item, index) => {
+        if (item.pid === pid) {
+          item.children = this.chushi(arys, item.user_id)
+          list.push(item)
+        }
+      })
+      return list
+    },
     getLevel (state) {
       if (state === '0') {
         return '无等级'
@@ -73,7 +86,7 @@ export default {
     },
     _getTeamList (params) {
       let that = this
-      getTeamList({pid: this.user_id}).then(res => {
+      getTeamList({pid: params.data.user_id}).then(res => {
         if (res.code === 1) {
           if (res.data.length === 0) {
             this.$message({
@@ -82,18 +95,21 @@ export default {
             })
           } else {
             let arys = []
-            res.data.forEach(item => {
+            res.data.forEach((item, index) => {
               arys.push({
                 pid: params.data.user_id,
-                id: item.user_id,
+                user_id: item.user_id,
                 value: item.team_cost,
+                dataIndex: params.data.dataIndex + 1,
+                myIndex: params.data.myIndex + '_' + (10 + index).toString(),
                 name: item.true_name === '' ? item.user_name : item.true_name,
-                level: item.level
+                level: item.level,
+                children: []
               })
             })
-            console.log(params.data.dataIndex.split('_'))
+            this.treeList = [...this.treeList, ...arys]
+            this.myChart.setOption(that.setOptions(this.chushi(this.treeList, 0)[0]))
           }
-          this.myChart.setOption(that.setOptions(that.data))
         } else {
           this.$message({
             type: 'error',
@@ -103,6 +119,7 @@ export default {
       })
     },
     setOptions (data) {
+      console.log(data)
       let that = this
       let obj = {
         series: [
