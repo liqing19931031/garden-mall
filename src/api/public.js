@@ -1,6 +1,5 @@
 import axios from 'axios'
 let qs = require('qs')
-console.log(qs)
 axios.defaults.timeout = 10000
 axios.defaults.withCredentials = true
 let baseURL = 'http://www.ng2.site/index.php'
