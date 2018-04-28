@@ -44,33 +44,44 @@
     </div>
     <div v-loading="loading" element-loading-text="加载中...">
       <section id="0" class="w mt30 clearfix">
-        <y-shelf title="热门商品">
-          <div slot="content" class="hot">
-            <mall-goods :msg="item" v-for="(item,i) in hot" :key="i"></mall-goods>
+        <div class="cq-floors">
+          <div class="cqz-shop" v-if='hot.length'>
+            <img :src='hot[0].ad_code' alt="">
+            <div class="shop-content">
+              <div class="shop-desc">
+                {{hot[0].ad_name}}
+              </div>
+              <div class="shop-price" style="color: #F51F1F;font-weight: bold">
+                ￥{{hot[0].goods_price}} / 0.1亩
+              </div>
+              <button type="default" name="button" style="margin-top: 20px;color: #F51F1F">
+                <a :href="hot[0].ad_link">立即购买</a>
+              </button>
+            </div>
           </div>
-        </y-shelf>
+        </div>
       </section>
       <section :id='i + 1' class="w mt30 clearfix" v-for="(item,i) in floors" :key="i">
-        <y-shelf :title="item[0].floor_name">
-          <div slot="content" class="floors">
-            <div class="imgbanner">
-              <a v-bind:href="floors[i][0].position_id"><img v-lazy="floors[i][0].ad_code" :alt="item.title"></a>
+        <div slot="content" class="floors">
+          <div class="floor-title">
+            <div class="floor-icon" :style="{backgroundColor: color[i]}">
+              {{i + 1 + 'F'}}
             </div>
-            <mall-goods :msg="tab" v-for="(tab,i) in item" :key="i"></mall-goods>
+            <div class="floor-line" :style="{backgroundColor: color[i]}">
+            </div>
+            {{item[0].floor_name}}
+            <div class="floor-line" :style="{backgroundColor: color[i]}">
+            </div>
           </div>
-        </y-shelf>
+          <div class="imgbanner" :style="{backgroundImage: 'url(\'/static/home/bg' + (i + 1) + '.png'}">
+            <a :href="item[0].ad_link">
+              <img :src="item[0].ad_code" alt="">
+            </a>
+          </div>
+          <mall-goods :msg="tab" v-for="(tab, ind) in item" :key="ind" :style='{color: color[i]}'></mall-goods>
+        </div>
       </section>
     </div>
-    <el-dialog
-      title="通知"
-      :visible.sync="dialogVisible"
-      width="30%"
-      style="width:70%;margin:0 auto">
-      <span>XPay个人支付收款系统已上线，赶快去支付体验吧！</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false">知道了</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -87,7 +98,11 @@
         hot: [],
         loading: true,
         notify: '1',
-        dialogVisible: false
+        color: [
+          '#2DC262',
+          '#F95D3E',
+          '#E53EF9'
+        ]
       }
     },
     methods: {
@@ -120,11 +135,40 @@
   .home {
     display: flex;
     flex-direction: column;
+    .cq-floors{
+      height: 170px;
+      background: url('/static/home/cqzbg.png');
+      background-size: 100% 100%;
+      .cqz-shop{
+          margin:0 auto;
+          height: 100%;
+          width: 412px;
+          padding:20px 51px;
+          box-sizing: border-box;
+          background-color: white;
+          img{
+            display: block;
+            float: left;
+            height: 130px;
+            width: 130px;
+          }
+          .shop-content{
+            width: 180px;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding-left: 26px;
+            float: left;
+          }
+          .shop-desc{
+            height: 57px;
+          }
+      }
+    }
   }
   .banner-group--title{
     height: 40px;
     margin-top: 20px;
-    border-bottom: 2px solid #0086ed;
+    background-color: #16B5FF;
     div.w{
       line-height: 40px;
       display: block;
@@ -133,7 +177,8 @@
         width: 200px;
         height: 40px;
         display: block;
-        background-color: #0086ed;
+        font-weight: bold;
+        background-color: #1EA1E5;
         display: block;
       }
     }
@@ -144,7 +189,7 @@
       width: 200px;
       float: left;
       height: 100%;
-      background-color: #00AAFF;
+      background-color: rgba(0, 0, 0,  0.7);
       a{
         color: white;
         width: 100%;
@@ -320,9 +365,42 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    .imgbanner {
+    .imgbanner{
       width: 50%;
-      height: 430px;
+      height: 345px;
+      background-size: 100% 100%;
+      img{
+        width: 240px;
+        height: 240px;
+        margin: 50px auto;
+      }
+    }
+    .floor-title{
+      width: 100%;
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
+      display: block;
+      font-size: 20px;
+      position: relative;
+      font-weight: bold;
+      .floor-icon{
+        position: absolute;
+        left: 0;
+        top: 20px;
+        text-align: center;
+        font-size: 14px;
+        color: white;
+        line-height: 20px;
+        width: 26px;
+        height: 20px;
+      }
+      .floor-line{
+        margin-bottom: 6px;
+        display: inline-block;
+        height: 2px;
+        width: 140px;
+      }
     }
     img {
       display: block;

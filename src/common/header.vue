@@ -329,15 +329,15 @@
   }
 
   .header-box {
-    background: $head-bgc;
-    background-image: -webkit-linear-gradient(#000, #121212);
-    background-image: linear-gradient(#000, #121212);
+    background: #333;
+    // background-image: -webkit-linear-gradient(#000, #121212);
+    // background-image: linear-gradient(#000, #121212);
     width: 100%;
 
   }
 
   header {
-    height: 100px;
+    height: 50;
     z-index: 30;
     position: relative;
   }

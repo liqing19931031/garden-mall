@@ -7,7 +7,6 @@
         </a>
       </div>
       <h6 class="good-title" v-html="msg.ad_name">{{msg.ad_name}}</h6>
-      <h3 class="sub-title ellipsis">{{msg.sub_title}}</h3>
       <div class="good-price pr">
         <div class="ds pa">
           <a :href="msg.ad_link">
@@ -90,7 +89,7 @@
     background: #fff;
     width: 25%;
     transition: all .5s;
-    height: 430px;
+    height: 345px;
     &:hover {
       transform: translateY(-3px);
       box-shadow: 1px 1px 20px #999;
@@ -125,7 +124,7 @@
     .good-title {
       line-height: 1.2;
       font-size: 16px;
-      color: #424242;
+      color: inherit;
       margin: 0 auto;
       padding: 0 14px;
       text-align: center;
