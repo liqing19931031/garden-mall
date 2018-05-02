@@ -130,9 +130,9 @@
     methods: {
       getLevel (state) {
         if (state === '') {
-          return '无等级'
+          return '普通代理'
         } else if (state === '0') {
-          return '无等级'
+          return '普通代理'
         } else if (state === '1') {
           return '区代理'
         } else if (state === '2') {

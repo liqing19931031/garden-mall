@@ -42,11 +42,10 @@
               <div class="prod-operation pa" style="right: 0;top: 0;">
                 <div class="total">¥ {{item.order_amount}}</div>
                 <div class="status" v-if="item.order_status !== '0'">
-                  <el-button v-if='item.order_status === "3"' @click="_delOrder(item.order_id)" type="danger" size="small" class="del-order">删除此订单</el-button>
-                  <el-button v-if='item.order_status === "4"' @click="_delOrder(item.order_id)" type="danger" size="small" class="del-order">删除此订单</el-button>
                   <el-button v-if='item.order_status === "1"' @click="_cancelOrder(item.order_id)" type="danger" size="small" class="del-order">取消订单</el-button>
                   <el-button v-if='item.order_status === "1"' @click="_goPay(item.order_id)" type="primary" size="small" class="del-order">去支付</el-button>
                   <el-button v-if='item.order_status === "2"' @click="_recOrder(item.order_id)" type="warning" size="small" class="del-order">确认收货</el-button>
+                  <el-button type="default" size="small" class="del-order" @click='orderDetail(item.order_id)'>查看详情</el-button>
                 </div>
               </div>
             </div>
@@ -71,7 +70,7 @@
   </div>
 </template>
 <script>
-  import { getOrderList, cancelOrder, delOrder, qrshOrder } from '/api/order'
+  import { getOrderList, cancelOrder, qrshOrder } from '/api/order'
   import YShelf from '/components/shelf'
   export default {
     data () {
@@ -149,19 +148,19 @@
           }
         })
       },
-      _delOrder (orderId) {
-        delOrder({order_id: orderId}).then(res => {
-          if (res.code === 1) {
-            this.$message({
-              type: 'success',
-              message: '订单删除成功！'
-            })
-            this._getOrderList()
-          } else {
-            this.$message.error(res.message)
-          }
-        })
-      },
+      // _delOrder (orderId) {
+      //   delOrder({order_id: orderId}).then(res => {
+      //     if (res.code === 1) {
+      //       this.$message({
+      //         type: 'success',
+      //         message: '订单删除成功！'
+      //       })
+      //       this._getOrderList()
+      //     } else {
+      //       this.$message.error(res.message)
+      //     }
+      //   })
+      // },
       _recOrder (orderId) {
         qrshOrder({order_id: orderId}).then(res => {
           if (res.code === 1) {
@@ -188,7 +187,7 @@
   @import "../../../assets/style/mixin";
   button{
     & + button{
-      margin-top: 15px;
+      margin-top: 5px;
     }
   }
   .el-button + .el-button{

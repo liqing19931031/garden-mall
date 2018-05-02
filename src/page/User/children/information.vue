@@ -41,6 +41,7 @@
                     <span><em style="font-size: 24px">￥{{coin.reward}}</em>可用</span>
                     <div class="">
                       <button type="primary" name="button" @click='tixian'>提现</button>
+                      <button type="default" name="button" @click='zhuanzhang'>转账</button>
                     </div>
                   </div>
                 </div>
@@ -60,7 +61,7 @@
               </div>
               <div style='padding: 15px;' class="check__box">
                 <span :class="{'checked-on': checkedOn}" @click='checkedOn = true'>交易明细</span>
-                <span :class="{'checked-on': !checkedOn}" @click='checkedOn = false'>分红明细</span>
+                <span :class="{'checked-on': !checkedOn}" @click='checkedOn = false'>奖励金明细</span>
               </div>
               <div v-if='checkedOn'>
                 <div v-if="teamList.length">
@@ -136,7 +137,7 @@
               </div>
             </el-tab-pane>
             <el-tab-pane label="产权证" name="second">
-              <el-button type="default" size="small" style="margin-left: 15px" @click='quduihuan'>兑换园林币</el-button>
+              <el-button type="default" size="small" style="margin-left: 15px" @click='dialog = true'>兑换园林币</el-button>
               <div style="padding: 15px">
                 <div class="cqz">
                   <div class="one-line">
@@ -250,34 +251,77 @@
       </div>
     </y-shelf>
     <el-dialog title="提现奖励金" :visible.sync="dialogTableVisible">
+      <div class="">
+        提示：提现需缴纳手续费 {{+tx_fee*100}}%
+      </div>
+      <div class="">
+        最小提现金额为100元
+      </div>
       <span class="money">¥</span>
       <el-input v-model="money" auto-complete="off"></el-input>
       <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="qutixian">确 定</el-button>
+      <button type="primary" @click="qutixian">确 定</button>
+    </div>
+    </el-dialog>
+    <el-dialog title="转账奖励金" :visible.sync="jljModel" class='jlj'>
+      您现在可转账奖励金：<span style='color: red'>{{coin.reward}}</span>
+      <div class="input-group">
+        <div class="input-title">
+          输入转账金额
+        </div>
+        <el-input v-model="jlj.reward"></el-input>
+      </div>
+      <div class="input-group">
+        <div class="input-title">
+          请输入对方手机号
+        </div>
+        <el-input v-model="jlj.mobile"></el-input>
+      </div>
+      <div class="input-group">
+        <div class="input-title">
+          请输入真实姓名
+        </div>
+        <el-input v-model="jlj.real_name"></el-input>
+      </div>
+      <div slot="footer" class="dialog-footer">
+      <button type="primary" @click="quzhuanzhang">确 定</button>
     </div>
     </el-dialog>
     <el-dialog title="兑换园林币" :visible.sync="dialog">
-      <span class="money">¥</span>
-      <el-input v-model="coinMoney" auto-complete="off"></el-input>
+      <div style="float: left;line-height: 30px">
+        兑换比例 0.1 : {{cqz2ylb_rate}}
+      </div>
+      <el-input v-model="coinMoney" auto-complete="off" placeholder='单位0.1亩'></el-input>
+      <div style="float: left;line-height: 30px">
+        可兑换{{coinMoney * +cqz2ylb_rate * 10}}个园林币
+      </div>
       <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="quduihuan">确 定</el-button>
-    </div>
+        <button type="primary" style="margin-top: 5px" @click="quduihuan">兑 换</button>
+      </div>
     </el-dialog>
   </div>
 </template>
 <script>
-  import { getUserCaptial, getTxInfo, getFfInfo, canTixian, applyTixian } from '/api/user'
-  import { getCqz } from '/api/team'
+  import { getUserCaptial, getTxInfo, getFfInfo, canTixian, applyTixian, changeCoin } from '/api/user'
+  import { getCqz, zuanzhang } from '/api/team'
   import YShelf from '/components/shelf'
   export default {
     data () {
       return {
+        jlj: {
+          reward: 0,
+          real_name: '',
+          mobile: ''
+        },
         money: 0,
-        coinMoney: 0,
+        cqz2ylb_rate: 0,
+        coinMoney: '',
         dialogTableVisible: false,
         dialog: false,
+        jljModel: false,
         activeName: 'first',
         checkedOn: true,
+        tx_fee: '',
         coin: {
           garden_coin: '0',
           reward: '0',
@@ -309,6 +353,26 @@
       },
       safeSave () {
       },
+      zhuanzhang () {
+        this.jljModel = true
+      },
+      quzhuanzhang () {
+        if (this.jlj.reward > +this.coin.reward) {
+          this.$message.error('转账金额不能超过您自身的奖励金！')
+        } else {
+          zuanzhang(this.jlj).then(res => {
+            if (res.code === 1) {
+              this.$message({
+                type: 'success',
+                message: '转账成功！'
+              })
+              this.jljModel = false
+            } else {
+              this.$message.error(res.message)
+            }
+          })
+        }
+      },
       chongzhi () {
         this.$alert('请联系客服！（扫屏幕右下方二维码，或者拨打公司热线）', '充值提示', {
           confirmButtonText: '确定',
@@ -328,7 +392,7 @@
         if (this.money < 100) {
           this.$message({
             type: 'warning',
-            message: '奖励金不足，不能提现'
+            message: '奖励金不足100，不能提现'
           })
         } else if (this.money > +this.reward) {
           this.$message({
@@ -336,23 +400,41 @@
             message: '提现金额不能大于奖励金总额！'
           })
         } else {
-          applyTixian({amount: this.money}).then(res => {
-            if (res.code === 1) {
-              this.$message({
-                type: 'success',
-                message: '提现成功！'
-              })
-              this.dialogTableVisible = false
-            } else {
-              this.$message.error(res.message)
-            }
+          this.$confirm('您确定要转账您的奖励金？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(res => {
+            applyTixian({amount: this.money}).then(res => {
+              if (res.code === 1) {
+                this.$message({
+                  type: 'success',
+                  message: '提现成功！'
+                })
+                this.dialogTableVisible = false
+                this._getUserCaptial()
+                this._getCqz()
+              } else {
+                this.$message.error(res.message)
+              }
+            })
           })
         }
       },
       quduihuan () {
         if (this.coinMoney <= (10 * +this.cqz_mj)) {
-          this.$message.error('该功能暂未开放！')
-          // this.dialog = true
+          this.dialog = true
+          changeCoin({cqz: this.coinMoney}).then(res => {
+            if (res.code === 1) {
+              this.$message({
+                type: 'success',
+                message: '兑换成功！'
+              })
+              this.dialog = false
+            } else {
+              this.$message.error(res.message)
+            }
+          })
         } else {
           this.$message({
             type: 'warning',
@@ -379,25 +461,44 @@
             this.rewardList = []
           }
         })
+      },
+      _getUserCaptial () {
+        getUserCaptial().then(res => {
+          this.coin = res.data
+          this.tx_fee = res.data.tx_fee
+          this.cqz2ylb_rate = res.data.cqz2ylb_rate
+        })
+      },
+      _getCqz () {
+        getCqz().then(res => {
+          let data = res.data
+          this.user_name = (data.real_name === '' ? data.user_name : data.real_name)
+          this.cqz_mj = data.cqz_mj === '' ? 0 : data.cqz_mj
+        })
       }
     },
     created () {
-      getCqz().then(res => {
-        let data = res.data
-        this.user_name = (data.real_name === '' ? data.user_name : data.real_name)
-        this.cqz_mj = data.cqz_mj === '' ? 0 : data.cqz_mj
-      })
+      this._getCqz()
       this._getTxInfo()
       this._getFfInfo()
-      getUserCaptial().then(res => {
-        this.coin = res.data
-      })
+      this._getUserCaptial()
     }
   }
 </script>
 <style lang="scss" scoped>
   .support {
     color: #999;
+    .jlj{
+      .input-group{
+        overflow: hidden;
+        .input-title{
+          float: left;
+          .el-dialog__body{
+            overflow: hidden;
+          }
+        }
+      }
+    }
     .check__box{
       span{
         cursor: pointer;

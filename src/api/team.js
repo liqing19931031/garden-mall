@@ -1,5 +1,5 @@
 import http from './public'
-// let qs = require('qs')
+let qs = require('qs')
 
 let commonParams = {
   m: 'api',
@@ -24,5 +24,18 @@ export const getTeamHead = (params) => {
 }
 
 export const getCzjl = (params) => {
-  return http.fetchGet('', {...commonParams, a: 'tdList', ...params})
+  return http.fetchGet('', {...commonParams, a: 'czInfo', ...params})
+}
+
+export const getJymx = (params) => {
+  return http.fetchGet('', {...commonParams, a: 'jyInfo', ...params})
+}
+
+export const zuanzhang = (params) => {
+  return http.fetchPost(
+    `?${qs.stringify({
+      ...commonParams,
+      a: 'transfer'
+    })}`, params
+  )
 }

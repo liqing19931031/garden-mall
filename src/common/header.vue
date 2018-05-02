@@ -337,7 +337,7 @@
   }
 
   header {
-    height: 50;
+    height: 50px;
     z-index: 30;
     position: relative;
   }
@@ -353,7 +353,7 @@
       display: flex;
       align-items: center;
       > a {
-        background: url(/static/images/global-logo-red@2x.png) no-repeat 50%;
+        background: url(/static/images/logo.png) no-repeat 50%;
         background-size: cover;
         display: block;
         @include wh(50px, 40px);

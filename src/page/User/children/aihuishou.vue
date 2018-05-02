@@ -38,7 +38,7 @@
                   邀请码
                 </div>
                 <div class="input-content">
-                  {{form.issue_invite_code}}
+                  {{form.can_invite === '1' ? form.issue_invite_code : '你暂未购买林权证，无法拥有邀请码'}}
                 </div>
               </div>
               <button type="primary" name="button" style="margin-top: 20px" @click='_updateMyInfo'>保存</button>
@@ -115,7 +115,8 @@
           real_name: '',
           id_card_number: '',
           issue_invite_code: 'test',
-          mobile_phone: 'test'
+          mobile_phone: 'test',
+          can_invite: '0'
         },
         property: {
           imtoken: '',
@@ -187,6 +188,7 @@
         getUserInfo().then(res => {
           this.form.user_name = res.data.user_name
           this.form.real_name = res.data.real_name
+          this.form.can_invite = res.data.can_invite
           this.form.id_card_number = res.data.id_card_number
           this.form.issue_invite_code = res.data.issue_invite_code
           this.form.mobile_phone = res.data.mobile_phone === '' ? '123456789' : res.data.mobile_phone

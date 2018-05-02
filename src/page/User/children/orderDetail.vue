@@ -3,7 +3,7 @@
     <y-shelf v-bind:title="orderTitle">
       <div slot="content">
         <div v-loading="loading" element-loading-text="加载中..." style="min-height: 10vw;" v-if="orderList.length">
-          <div class="orderStatus" v-if="orderStatus !== -1 && orderStatus !== 6">
+          <!-- <div class="orderStatus" v-if="orderStatus !== -1 && orderStatus !== 6">
             <el-steps :space="200" :active="orderStatus">
               <el-step title="下单" v-bind:description="createTime"></el-step>
               <el-step title="付款" v-bind:description="payTime"></el-step>
@@ -53,14 +53,14 @@
             <p class="realtime">
               <span>您的订单已关闭。</span>
             </p>
-          </div>
-          <div class="status-now" v-if="orderStatus === 5">
-            <ul>
-              <li class="status-title"><h3>订单状态：已完成</h3></li>
-            </ul>
-            <p class="realtime">
-              <span>您的订单已交易成功，感谢您的惠顾！</span>
-            </p>
+          </div> -->
+          <div style="padding:0 30px;line-height: 30px">
+            <div style="float: left">
+              快递单号 {{invoice_no}} {{shipping_name}}
+            </div>
+            <a href="http://www.kuaidi100.com/" target="_blank" style="margin-left: 30px">
+                去查询
+            </a>
           </div>
           <div class="gray-sub-title cart-title">
             <div class="first">
@@ -96,8 +96,8 @@
             </p>
             <p class="my-price"><span style="padding-right:30px">运&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp费：</span><span style="font-weight: 700;">+ ¥ {{shippingFee}}</span></p>
             <p class="my-price"><span style="padding-right:30px">抵&nbsp&nbsp用&nbsp&nbsp券：</span><span style="font-weight: 700;">- ¥ {{integralMoney}}</span></p>
-            <p class="my-price"><span style="padding-right:30px">余额支付：</span><span style="font-weight: 700;">- ¥ {{(+orderAmount - +integralMoney).toFixed(2)}}</span></p>
-            <p class="price-total"><span>应付金额：</span><span class="price-red">¥ {{orderAmount}}</span></p>
+            <p class="my-price"><span style="padding-right:30px">余额支付：</span><span style="font-weight: 700;">- ¥ {{orderAmount}}</span></p>
+            <p class="price-total"><span>应付金额：</span><span class="price-red">¥ {{(+orderAmount + +integralMoney).toFixed(2)}}</span></p>
           </div>
 
           <div class="gray-sub-title cart-title">
@@ -164,6 +164,8 @@
             this.orderList = res.data.goods
             this.userName = res.data.consignee
             this.tel = res.data.mobile
+            this.invoice_no = res.data.invoice_no
+            this.shipping_name = res.data.shipping_name
             this.orderTotal = res.data.goods_amount
             this.shippingFee = res.data.shipping_fee
             this.integralMoney = res.data.integral_money

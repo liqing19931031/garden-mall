@@ -9,15 +9,15 @@
             </li>
             <li>
               <img src="/static/footer/2.png" alt="">
-              <span>平台认证</span>
+              <span>信誉担保</span>
             </li>
             <li>
               <img src="/static/footer/3.png" alt="">
-              <span>平台认证</span>
+              <span>阳光采购</span>
             </li>
             <li>
               <img src="/static/footer/4.png" alt="">
-              <span>平台认证</span>
+              <span>安全放心</span>
             </li>
           </ul>
           <div class="company-message">

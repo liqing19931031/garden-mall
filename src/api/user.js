@@ -16,6 +16,16 @@ export const updateMyInfo = (params) => {
   )
 }
 
+// 兑换币
+export const changeCoin = (params) => {
+  return http.fetchPost(
+    `?${qs.stringify({
+      ...commonParams,
+      a: 'cqz2ylb'
+    })}`, params
+  )
+}
+
 // 获取个人信息
 export const getUserCaptial = (parmas) => {
   return http.fetchGet('', {...commonParams, a: 'userCaptial', parmas})

@@ -42,8 +42,10 @@
           {name: '地址管理', path: 'addressList'},
           {name: '我的团队', path: 'coupon'},
           // {name: '消息管理', path: 'support'},
+          {name: '提现明细', path: 'czmx'},
           {name: '充值记录', path: 'payrank'},
           {name: '个人设置', path: 'aihuishou'}
+
         ],
         editAvatar: true
       }

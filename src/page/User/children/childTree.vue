@@ -72,7 +72,7 @@ export default {
     },
     getLevel (state) {
       if (state === '0') {
-        return '无等级'
+        return '普通代理'
       } else if (state === '1') {
         return '区代理'
       } else if (state === '2') {
@@ -80,7 +80,7 @@ export default {
       } else if (state === '3') {
         return '省代理'
       } else {
-        return '无等级'
+        return '普通代理'
       }
     },
     _getTeamList (params) {
